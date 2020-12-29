@@ -1,0 +1,21 @@
+.UserInput,
+.UserOutput {
+  text-align: left;
+}
+
+.UserInput {
+  padding: 1rem;
+}
+
+.UserOutput {
+  margin-left: 1rem;
+}
+
+.UserInput label {
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.UserInput input {
+  padding: 0.5rem;
+}
