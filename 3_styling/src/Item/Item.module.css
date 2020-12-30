@@ -1,0 +1,13 @@
+.textArea {
+  border: 1px solid black;
+}
+
+.textArea.hasData {
+  text-align: center;
+  font-weight: bold;
+  background: yellow;
+}
+
+.textArea.hasNoData {
+  font-weight: normal;
+}

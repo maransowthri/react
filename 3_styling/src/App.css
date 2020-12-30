@@ -1,0 +1,16 @@
+.App {
+  text-align: center;
+}
+
+.hasData {
+  text-align: center;
+  font-weight: bold;
+}
+
+.hasNoData {
+  font-weight: normal;
+}
+
+.data {
+  border: 1px solid #333;
+}
