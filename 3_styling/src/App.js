@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Item from "./Item/Item_CSSModules";
+import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
 
 class App extends Component {
   state = { flag: true };
@@ -15,7 +16,9 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Item data={data} />
+        <ErrorBoundary>
+          <Item data={data} />
+        </ErrorBoundary>
         <button onClick={this.toggleHandler}>{buttonText}</button>
       </div>
     );

@@ -10,6 +10,12 @@ export default function Item(props) {
     assignedClasses.push(classes.hasNoData);
   }
 
+  const errorProb = Math.random();
+
+  if (errorProb > 0.7) {
+    throw new Error("Something went wrong!");
+  }
+
   return (
     <div>
       <p className={assignedClasses.join(" ")}>Data: {props.data}</p>
