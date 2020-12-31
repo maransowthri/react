@@ -1,0 +1,29 @@
+.Persons {
+  background: #f4f4f4;
+}
+
+.Persons h3 {
+  padding: 1.5rem;
+}
+
+.Persons .input,
+.Persons .button {
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.Persons .input {
+  border-radius: 10px;
+}
+
+.Persons .button {
+  cursor: pointer;
+  background: #333;
+  color: #fff;
+  border-radius: 10px;
+}
+
+.Persons .button:hover {
+  background: #000;
+}
