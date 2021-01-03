@@ -1,0 +1,27 @@
+.NavigationItem {
+  padding: 0 1rem;
+  transition: all 0.5s ease-in-out;
+}
+
+.NavigationItem a {
+  transition: all 0.5s ease-in-out;
+}
+
+.NavigationItem:hover a {
+  color: #a7ff83;
+}
+
+.NavigationItem a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.NavigationItem .Active {
+  color: #17b978;
+}
+
+@media (max-width: 500px) {
+  .NavigationItem {
+    padding: 1rem;
+  }
+}

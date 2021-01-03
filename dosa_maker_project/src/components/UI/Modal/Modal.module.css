@@ -1,0 +1,17 @@
+.Modal {
+  position: fixed;
+  top: 20%;
+  left: 20%;
+  background: #fff;
+  z-index: 200;
+  width: 60%;
+  transition: all 0.3s ease-in-out;
+}
+
+.Open {
+  transform: translateY(0px);
+}
+
+.Close {
+  transform: translateY(-120vh);
+}

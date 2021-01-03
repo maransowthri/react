@@ -1,0 +1,25 @@
+.Button {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.Primary {
+  background: #071e3d;
+  color: #fff;
+}
+
+.Secondary {
+  background: #1f4287;
+  color: #fff;
+}
+
+.Success {
+  background: #21e6c1;
+  color: #333;
+}
+
+.Danger {
+  background: #5d5d5a;
+  color: #fff;
+}

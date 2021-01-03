@@ -1,0 +1,16 @@
+.DosaControl {
+  padding: 1rem;
+  width: 100%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
+.DosaControl h3 {
+  display: inline;
+  margin-right: 3rem;
+}
+
+.DosaControl button {
+  margin-right: 1rem;
+}

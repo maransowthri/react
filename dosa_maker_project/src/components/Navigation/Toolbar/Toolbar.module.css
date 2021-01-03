@@ -1,0 +1,14 @@
+.Toolbar {
+  background: #071a52;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+@media (max-width: 500px) {
+  .DesktopOnly {
+    display: none;
+  }
+}
