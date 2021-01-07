@@ -4,12 +4,15 @@ import classes from "./Modal.module.css";
 import Backdrop from "../Backdrop/Backdrop";
 
 class Modal extends Component {
-  componentDidUpdate() {
-    console.log("Modal updated!");
-  }
+  // componentDidUpdate() {
+  //   console.log("Modal updated!");
+  // }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.show !== this.props.show;
+    return (
+      nextProps.show !== this.props.show ||
+      nextProps.children !== this.props.children
+    );
   }
 
   render() {

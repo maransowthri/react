@@ -1,20 +1,38 @@
+import React, { Component } from "react";
+
 import classes from "./Modal.module.css";
 import BackDrop from "../BackDrop/BackDrop";
 
-const Modal = (props) => {
-  return (
-    <>
-      <BackDrop state={props.state ? "true" : null} />
-      <div
-        className={[
-          classes.Modal,
-          props.state ? classes.Open : classes.Close,
-        ].join(" ")}
-      >
-        {props.children}
-      </div>
-    </>
-  );
-};
+class Modal extends Component {
+  shouldComponentUpdate(nextState) {
+    return (
+      nextState.state !== this.props.state ||
+      nextState.children !== this.props.children
+    );
+  }
+
+  // componentDidUpdate() {
+  //   console.log("Modal updated!");
+  // }
+
+  render() {
+    return (
+      <>
+        <BackDrop
+          click={this.props.click}
+          state={this.props.state ? "true" : null}
+        />
+        <div
+          className={[
+            classes.Modal,
+            this.props.state ? classes.Open : classes.Close,
+          ].join(" ")}
+        >
+          {this.props.children}
+        </div>
+      </>
+    );
+  }
+}
 
 export default Modal;

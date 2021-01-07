@@ -1,4 +1,5 @@
 .DrawerToggle {
+  display: block;
 }
 
 @media (min-width: 500px) {

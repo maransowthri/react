@@ -4,9 +4,9 @@ import { INGREDIENTS } from "../../../containers/BurgerBuilder/BurgerBuilder";
 import Button from "../../UI/Button/Button";
 
 class OrderSummary extends Component {
-  componentDidUpdate() {
-    console.log("OrderSummary updated!");
-  }
+  // componentDidUpdate() {
+  //   console.log("OrderSummary updated!");
+  // }
 
   render() {
     const ingredients = Object.keys(this.props.ingredients).map((key) => (

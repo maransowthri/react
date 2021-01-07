@@ -13,15 +13,10 @@ const OrderSummary = (props) => {
       <h3>Order Summary</h3>
       <ul>{ingredients}</ul>
       <p>
-        Total Price: $ <strong>{props.totalPrice}</strong>
+        Total Price: $ <strong>{props.totalPrice.toFixed(2)}</strong>
       </p>
       <div className={classes.Button}>
-        <Button
-          click={() => {
-            alert("Order Placed!");
-          }}
-          type="Success"
-        >
+        <Button click={props.orderedHandler} type="Success">
           Continue
         </Button>
         <Button click={props.modalHandler} type="Danger">
