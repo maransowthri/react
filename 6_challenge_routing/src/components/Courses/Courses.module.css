@@ -1,0 +1,14 @@
+.Courses {
+  text-align: center;
+  margin: 2rem;
+}
+
+.Courses h1 {
+  margin: 2rem;
+}
+
+.Courses ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}

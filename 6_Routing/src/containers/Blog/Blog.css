@@ -1,0 +1,32 @@
+.Nav nav {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+}
+.Nav nav a {
+  color: #333;
+  text-decoration: none;
+}
+.Nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+}
+
+.Nav ul li {
+  padding: 0 1rem;
+}
+
+.Nav ul li a {
+  text-decoration: none;
+  color: #333;
+}
+
+.Nav ul li a:hover,
+.Nav ul li a:active {
+  color: orange;
+}
+
+.Nav ul li a.active {
+  color: orange;
+}

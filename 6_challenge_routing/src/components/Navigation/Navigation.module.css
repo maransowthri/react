@@ -1,0 +1,25 @@
+.Navigation {
+  display: flex;
+  justify-content: space-around;
+  background: #c5e3f6;
+  padding: 1rem;
+}
+
+.Navigation ul {
+  display: flex;
+  list-style: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.Navigation ul li {
+  padding: 0 1rem;
+}
+
+.Navigation ul li:hover a {
+  color: #fc5c9c;
+}
+
+.Active {
+  color: #fc5c9c;
+}
