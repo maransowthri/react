@@ -1,6 +1,6 @@
 import classes from "./OrderSummary.module.css";
-import { INGREDINETS } from "../../../../containers/DosaBuilder/DosaBuilder";
-import Button from "../../../../components/UI/Button/Button";
+import { INGREDINETS } from "../../../containers/DosaBuilder/DosaBuilder";
+import Button from "../../UI/Button/Button";
 
 const OrderSummary = (props) => {
   const ingredients = Object.keys(props.ingredients).map((key) => (

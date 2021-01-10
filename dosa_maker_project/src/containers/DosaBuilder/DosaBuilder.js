@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 
-import axios from "../../axios/axios";
+import axios from "../../axios/axios-orders";
 
 import DosaIngredients from "../../components/Dosa/DosaIngredients/DosaIngredients";
 import DosaControls from "../../components/Dosa/DosaControls/DosaControls";
-import OrderSummary from "../../components/Dosa/DosaControls/OrderSummary/OrderSummary";
+import OrderSummary from "../../components/Dosa/OrderSummary/OrderSummary";
 import Modal from "../../components/UI/Modal/Modal";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
@@ -60,32 +60,17 @@ class DosaBuilder extends Component {
   };
 
   orderedHandler = () => {
-    this.setState((prevState) => {
-      return { loading: true };
+    const searchParams = Object.keys(this.state.ingredients).map(
+      (key) =>
+        encodeURIComponent(key) +
+        "=" +
+        encodeURIComponent(this.state.ingredients[key])
+    );
+    searchParams.push("price=" + this.state.totalPrice.toFixed(2));
+    this.props.history.push({
+      pathname: "/checkout",
+      search: searchParams.join("&"),
     });
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        id: 1,
-        name: "Maran Sowthri Kalailingam",
-        address: {
-          street: "1/99 Test Street",
-          zipCode: "600001",
-          country: "India",
-        },
-        email: "maran@gmail.com",
-      },
-      deliveryMethod: "fastest",
-    };
-    axios
-      .post("orders.json", order)
-      .then((res) => {
-        this.setState({ modalState: false, loading: false });
-      })
-      .catch((err) => {
-        this.setState({ modalState: false, loading: false });
-      });
   };
 
   render() {

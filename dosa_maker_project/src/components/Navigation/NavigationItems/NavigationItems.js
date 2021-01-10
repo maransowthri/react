@@ -4,11 +4,11 @@ import NavigationItem from "./NavigationItem/NavigationItem";
 const NavigationItems = (props) => {
   return (
     <ul className={classes.NavigationItems}>
-      <NavigationItem active>
+      <NavigationItem to="/">
         <h3>Home</h3>
       </NavigationItem>
-      <NavigationItem>
-        <h3>Checkout</h3>
+      <NavigationItem to="/orders">
+        <h3>Orders</h3>
       </NavigationItem>
     </ul>
   );

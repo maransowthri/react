@@ -29,7 +29,7 @@ class Orders extends Component {
 
   render() {
     let summary = null;
-    if (this.state.loadin) {
+    if (this.state.loading) {
       summary = <Spinner />;
     }
     if (this.state.orders) {
