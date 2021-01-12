@@ -19,3 +19,15 @@
   padding: 1rem;
   border: 1px solid #000;
 }
+
+.Invalid {
+  border: 2px solid red;
+  background: salmon;
+}
+
+.ErrorMessage {
+  text-align: center;
+  background: #fccb81;
+  margin: 0 2rem;
+  padding: 1rem;
+}

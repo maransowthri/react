@@ -9,6 +9,7 @@ import Input from "../../../components/UI/Input/Input";
 
 export default class ContactDetails extends Component {
   state = {
+    formIsValid: false,
     orderForm: {
       name: {
         elementType: "input",
@@ -18,6 +19,14 @@ export default class ContactDetails extends Component {
           placeholder: "Your Name",
         },
         value: "",
+        validation: {
+          valid: false,
+          touched: false,
+          errorMessage: "Please input your name.",
+          rules: {
+            required: true,
+          },
+        },
       },
       email: {
         elementType: "input",
@@ -27,6 +36,14 @@ export default class ContactDetails extends Component {
           placeholder: "someone@example.com",
         },
         value: "",
+        validation: {
+          valid: false,
+          touched: false,
+          errorMessage: "Please enter valid mail",
+          rules: {
+            required: true,
+          },
+        },
       },
       address: {
         elementType: "input",
@@ -36,6 +53,14 @@ export default class ContactDetails extends Component {
           placeholder: "Address...",
         },
         value: "",
+        validation: {
+          valid: false,
+          touched: false,
+          errorMessage: "Please enter your address here.",
+          rules: {
+            required: true,
+          },
+        },
       },
       pin: {
         elementType: "input",
@@ -45,6 +70,16 @@ export default class ContactDetails extends Component {
           placeholder: "XXXXXX",
         },
         value: "",
+        validation: {
+          valid: false,
+          touched: false,
+          errorMessage: "Please enter your PIN Code here.",
+          rules: {
+            required: true,
+            minLength: 5,
+            maxLength: 7,
+          },
+        },
       },
       deliveryMethod: {
         elementType: "select",
@@ -61,23 +96,37 @@ export default class ContactDetails extends Component {
     loading: false,
   };
 
+  validateRules(value, rules) {
+    if (rules.required) {
+      if (value.trim().length <= 0) {
+        return false;
+      }
+    }
+    if (rules.minLength) {
+      if (value.trim().length < rules.minLength) {
+        return false;
+      }
+    }
+
+    if (rules.maxLength) {
+      if (value.trim().length > rules.maxLength) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   orderHandler = (e) => {
     e.preventDefault();
     this.setState({ loading: true });
+    const orderData = Object.keys(this.state.orderForm).reduce((prev, next) => {
+      prev[next] = this.state.orderForm[next].value;
+      return prev;
+    }, {});
     const order = {
       ingredients: this.props.ingredients,
       price: this.props.totalPrice,
-      customer: {
-        id: 1,
-        name: "Maran Sowthri Kalailingam",
-        address: {
-          street: "1/99 Test Street",
-          zipCode: "600001",
-          country: "India",
-        },
-        email: "maran@gmail.com",
-      },
-      deliveryMethod: "fastest",
+      orderData: orderData,
     };
     axios
       .post("orders.json", order)
@@ -90,10 +139,27 @@ export default class ContactDetails extends Component {
 
   inputChangedHandler = (event, key) => {
     const updatedOrderForm = { ...this.state.orderForm };
+    let formIsValid = true;
+    for (let key in updatedOrderForm) {
+      if (
+        updatedOrderForm[key].validation &&
+        !updatedOrderForm[key].validation.valid
+      ) {
+        formIsValid = false;
+        break;
+      }
+    }
     const updatedInput = updatedOrderForm[key];
     updatedInput.value = event.target.value;
+    if (updatedInput.validation) {
+      updatedInput.validation.touched = true;
+      updatedInput.validation.valid = this.validateRules(
+        updatedInput.value,
+        updatedInput.validation.rules
+      );
+    }
     updatedOrderForm[key] = updatedInput;
-    this.setState({ orderForm: updatedOrderForm });
+    this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
   };
 
   render() {
@@ -108,6 +174,21 @@ export default class ContactDetails extends Component {
           elementType={this.state.orderForm[key].elementType}
           elementConfig={this.state.orderForm[key].elementConfig}
           value={this.state.orderForm[key].value}
+          errorMessage={
+            this.state.orderForm[key].validation
+              ? this.state.orderForm[key].validation.errorMessage
+              : null
+          }
+          touched={
+            this.state.orderForm[key].validation
+              ? this.state.orderForm[key].validation.touched
+              : false
+          }
+          valid={
+            this.state.orderForm[key].validation
+              ? this.state.orderForm[key].validation.valid
+              : true
+          }
           changed={(event) => this.inputChangedHandler(event, key)}
         />
       ));
@@ -115,7 +196,7 @@ export default class ContactDetails extends Component {
         <>
           {inputEls}
           <div className={classes.Submit}>
-            <Button btnType="Success" click={this.orderHandler}>
+            <Button btnType="Success" disabled={!this.state.formIsValid}>
               Place Order
             </Button>
           </div>
@@ -125,7 +206,7 @@ export default class ContactDetails extends Component {
     return (
       <div className={classes.ContactDetails}>
         <h3>Shipping Details</h3>
-        <form>{form}</form>
+        <form onSubmit={this.orderHandler}>{form}</form>
       </div>
     );
   }
