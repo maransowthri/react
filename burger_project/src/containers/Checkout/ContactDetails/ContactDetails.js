@@ -5,13 +5,59 @@ import axios from "../../../axios/axios-orders";
 
 import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
+import Input from "../../../components/UI/Input/Input";
 
 export default class ContactDetails extends Component {
   state = {
-    name: "",
-    email: "",
-    address: "",
-    pincode: "",
+    orderForm: {
+      name: {
+        elementType: "input",
+        label: "Name",
+        elementConfig: {
+          type: "text",
+          placeholder: "Your Name",
+        },
+        value: "",
+      },
+      email: {
+        elementType: "input",
+        label: "Email",
+        elementConfig: {
+          type: "text",
+          placeholder: "someone@example.com",
+        },
+        value: "",
+      },
+      address: {
+        elementType: "input",
+        label: "Address",
+        elementConfig: {
+          type: "text",
+          placeholder: "Address...",
+        },
+        value: "",
+      },
+      pin: {
+        elementType: "input",
+        label: "PIN Code",
+        elementConfig: {
+          type: "text",
+          placeholder: "XXXXXX",
+        },
+        value: "",
+      },
+      deliveryMethod: {
+        elementType: "select",
+        label: "Delivery Type",
+        elementConfig: {
+          options: [
+            { value: "fastest", displayValue: "Fastest" },
+            { value: "cheapest", displayValue: "Cheapest" },
+          ],
+        },
+        value: "",
+      },
+    },
     loading: false,
   };
 
@@ -42,34 +88,32 @@ export default class ContactDetails extends Component {
       .catch((err) => this.setState({ loading: false }));
   };
 
+  inputChangedHandler = (event, key) => {
+    const updatedOrderForm = { ...this.state.orderForm };
+    const updatedInput = updatedOrderForm[key];
+    updatedInput.value = event.target.value;
+    updatedOrderForm[key] = updatedInput;
+    this.setState({ orderForm: updatedOrderForm });
+  };
+
   render() {
     let form = null;
     if (this.state.loading) {
       form = <Spinner />;
     } else {
+      const inputEls = Object.keys(this.state.orderForm).map((key) => (
+        <Input
+          key={key}
+          label={this.state.orderForm[key].label}
+          elementType={this.state.orderForm[key].elementType}
+          elementConfig={this.state.orderForm[key].elementConfig}
+          value={this.state.orderForm[key].value}
+          changed={(event) => this.inputChangedHandler(event, key)}
+        />
+      ));
       form = (
         <>
-          <div className={classes.FormField}>
-            <label htmlFor="name">Name</label>
-            <input type="text" name="name" id="name" placeholder="Mike" />
-          </div>
-          <div className={classes.FormField}>
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="someone@example.com"
-            />
-          </div>
-          <div className={classes.FormField}>
-            <label htmlFor="address">Address</label>
-            <input type="text" name="address" id="address" />
-          </div>
-          <div className={classes.FormField}>
-            <label htmlFor="pin">Pin Code</label>
-            <input type="number" name="pin" id="pin" />
-          </div>
+          {inputEls}
           <div className={classes.Submit}>
             <Button btnType="Success" click={this.orderHandler}>
               Place Order

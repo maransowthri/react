@@ -1,0 +1,21 @@
+.Input {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  margin: 2rem;
+  padding: 1rem 0;
+}
+
+.Input label {
+  /* margin-right: 2rem; */
+  padding: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.Input input,
+.Input select {
+  margin-left: 1rem;
+  margin-right: 2rem;
+  padding: 1rem;
+  border: 1px solid #000;
+}

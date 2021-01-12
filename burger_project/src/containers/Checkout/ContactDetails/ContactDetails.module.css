@@ -6,27 +6,6 @@
   text-align: center;
 }
 
-.FormField {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  margin: 2rem;
-  padding: 1rem 0;
-}
-
-.FormField label {
-  /* margin-right: 2rem; */
-  padding: 1rem;
-  align-items: center;
-  justify-content: center;
-}
-
-.FormField input {
-  margin-left: 1rem;
-  margin-right: 2rem;
-  padding: 1rem;
-  border: 1px solid #000;
-}
-
 .Submit {
   /* display: none; */
   /* display: flex;
