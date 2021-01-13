@@ -20,6 +20,12 @@
 }
 
 .Danger {
+  background: red;
+  color: #fff;
+}
+
+.Disabled {
   background: #5d5d5a;
   color: #fff;
+  cursor: not-allowed;
 }
