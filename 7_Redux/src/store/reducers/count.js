@@ -1,16 +1,18 @@
+import * as actionTypes from "../actions";
+
 const initialState = {
   counter: 0,
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "INC_COUNTER":
+    case actionTypes.INC_COUNTER:
       return { ...state, counter: state.counter + 1 };
-    case "DEC_COUNTER":
+    case actionTypes.DEC_COUNTER:
       return { ...state, counter: state.counter - 1 };
-    case "ADD_COUNTER":
+    case actionTypes.ADD_COUNTER:
       return { ...state, counter: state.counter + action.payload.value };
-    case "SUB_COUNTER":
+    case actionTypes.SUB_COUNTER:
       return { ...state, counter: state.counter - action.payload.value };
     default:
       return state;
