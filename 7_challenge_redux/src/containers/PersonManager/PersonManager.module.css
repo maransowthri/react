@@ -1,0 +1,12 @@
+.Button {
+  margin: 1rem 0;
+  padding: 1rem;
+  cursor: pointer;
+  background: cornflowerblue;
+  color: #fff;
+  margin-right: 1rem;
+}
+
+.Button:hover {
+  background: navy;
+}
