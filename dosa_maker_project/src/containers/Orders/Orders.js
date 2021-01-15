@@ -27,7 +27,7 @@ export default class Orders extends Component {
       orders = Object.keys(this.state.orders).map((key) => (
         <Order
           key={key}
-          price={this.state.orders[key].price.toFixed(2)}
+          price={this.state.orders[key].totalPrice.toFixed(2)}
           ingredients={this.state.orders[key].ingredients}
         />
       ));

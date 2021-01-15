@@ -1,33 +1,16 @@
 import React, { Component } from "react";
 import { Route } from "react-router-dom";
+import { connect } from "react-redux";
 
 import classes from "./Checkout.module.css";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import CheckoutSummary from "../../components/Dosa/CheckoutSummary/CheckoutSummary";
 import ContactDetails from "./ContactDetails/ContactDetails";
 
-export default class Checkout extends Component {
+class Checkout extends Component {
   state = {
-    ingredients: null,
-    totalPrice: 0,
+    loading: false,
   };
-
-  componentDidMount() {
-    const params = new URLSearchParams(this.props.location.search);
-    const ingredients = {};
-    let totalPrice = 0;
-    for (let item of params) {
-      if (item[0] === "price") {
-        totalPrice = +item[1];
-      } else {
-        ingredients[item[0]] = +item[1];
-      }
-    }
-    this.setState({
-      ingredients: ingredients,
-      totalPrice: totalPrice,
-    });
-  }
 
   cancelOrder = () => {
     this.props.history.goBack();
@@ -45,19 +28,13 @@ export default class Checkout extends Component {
       checkout = (
         <>
           <CheckoutSummary
-            ingredients={this.state.ingredients}
+            ingredients={this.props.ingredients}
             cancelOrder={this.cancelOrder}
             placeOrder={this.placeOrder}
           />
           <Route
             path={this.props.match.path + "/contact-details"}
-            render={(props) => (
-              <ContactDetails
-                totalPrice={this.state.totalPrice}
-                ingredients={this.state.ingredients}
-                {...props}
-              />
-            )}
+            component={ContactDetails}
           />
         </>
       );
@@ -65,3 +42,9 @@ export default class Checkout extends Component {
     return <div className={classes.Checkout}>{checkout}</div>;
   }
 }
+
+const mapStateToProps = (state) => {
+  return { ingredients: state.ingredients };
+};
+
+export default connect(mapStateToProps)(Checkout);

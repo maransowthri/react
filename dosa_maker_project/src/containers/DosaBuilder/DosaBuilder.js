@@ -1,56 +1,19 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 import axios from "../../axios/axios-orders";
-
 import DosaIngredients from "../../components/Dosa/DosaIngredients/DosaIngredients";
 import DosaControls from "../../components/Dosa/DosaControls/DosaControls";
 import OrderSummary from "../../components/Dosa/OrderSummary/OrderSummary";
 import Modal from "../../components/UI/Modal/Modal";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
-
-export const INGREDINETS = {
-  cheese: { label: "Cheese", unitPrice: 1.2 },
-  mushroom: { label: "Mushroom", unitPrice: 0.5 },
-};
+import * as actionTypes from "../../store/actions";
 
 class DosaBuilder extends Component {
   state = {
-    ingredients: null,
-    totalPrice: 1,
     modalState: false,
     loading: false,
-  };
-
-  componentDidMount() {
-    axios.get("ingredients.json").then((res) => {
-      this.setState({ ingredients: res.data });
-    });
-  }
-
-  addIngredient = (type) => {
-    const ingredients = { ...this.state.ingredients };
-    let oldCount = ingredients[type];
-    ingredients[type] = oldCount + 1;
-    this.setState({ ingredients });
-    this.updatePrice(type, 1);
-  };
-
-  removeIngredient = (type) => {
-    const ingredients = { ...this.state.ingredients };
-    let oldCount = ingredients[type];
-    if (oldCount === 0) {
-      return;
-    }
-    ingredients[type] = oldCount - 1;
-    this.setState({ ingredients });
-    this.updatePrice(type, -1);
-  };
-
-  updatePrice = (ingredient, addRemove) => {
-    let oldPrice = this.state.totalPrice;
-    let unitPrice = INGREDINETS[ingredient].unitPrice * addRemove;
-    this.setState({ totalPrice: oldPrice + unitPrice });
   };
 
   modalHandler = () => {
@@ -60,45 +23,35 @@ class DosaBuilder extends Component {
   };
 
   orderedHandler = () => {
-    const searchParams = Object.keys(this.state.ingredients).map(
-      (key) =>
-        encodeURIComponent(key) +
-        "=" +
-        encodeURIComponent(this.state.ingredients[key])
-    );
-    searchParams.push("price=" + this.state.totalPrice.toFixed(2));
-    this.props.history.push({
-      pathname: "/checkout",
-      search: searchParams.join("&"),
-    });
+    this.props.history.push("/checkout");
   };
 
   render() {
-    let burger = null;
+    let dosa = null;
     let summary = null;
 
-    if (this.state.ingredients) {
-      burger = (
+    if (this.props.ingredients) {
+      dosa = (
         <>
-          <DosaIngredients ingredients={this.state.ingredients} />
+          <DosaIngredients ingredients={this.props.ingredients} />
           <DosaControls
-            totalPrice={this.state.totalPrice}
-            addIngredient={this.addIngredient}
-            removeIngredient={this.removeIngredient}
+            totalPrice={this.props.totalPrice}
+            addIngredient={this.props.onAddIngredient}
+            removeIngredient={this.props.onRemoveIngredient}
             modalHandler={this.modalHandler}
           />
         </>
       );
       summary = (
         <OrderSummary
-          totalPrice={this.state.totalPrice}
-          ingredients={this.state.ingredients}
+          totalPrice={this.props.totalPrice}
+          ingredients={this.props.ingredients}
           orderedHandler={this.orderedHandler}
           modalHandler={this.modalHandler}
         />
       );
     } else {
-      burger = <Spinner />;
+      dosa = <Spinner />;
     }
 
     if (this.state.loading) {
@@ -110,10 +63,32 @@ class DosaBuilder extends Component {
         <Modal click={this.modalHandler} state={this.state.modalState}>
           {summary}
         </Modal>
-        {burger}
+        {dosa}
       </>
     );
   }
 }
 
-export default withErrorHandler(DosaBuilder, axios);
+const mapStateToProps = (state) => {
+  return { ingredients: state.ingredients, totalPrice: state.totalPrice };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAddIngredient: (ingredient) =>
+      dispatch({
+        type: actionTypes.ADD_INGREDIENT,
+        payload: { ingredient: ingredient },
+      }),
+    onRemoveIngredient: (ingredient) =>
+      dispatch({
+        type: actionTypes.REMOVE_INGREDIENT,
+        payload: { ingredient: ingredient },
+      }),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(DosaBuilder, axios));
