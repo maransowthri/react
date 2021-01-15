@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 import classes from "./ContactDetails.module.css";
 import axios from "../../../axios/axios-orders";
@@ -7,7 +8,7 @@ import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
 
-export default class ContactDetails extends Component {
+class ContactDetails extends Component {
   state = {
     formIsValid: false,
     orderForm: {
@@ -211,3 +212,9 @@ export default class ContactDetails extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return { ingredients: state.ingredients };
+};
+
+export default connect(mapStateToProps)(ContactDetails);

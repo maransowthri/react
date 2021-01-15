@@ -7,26 +7,22 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ADD_PERSON:
-      const names = ["Karan", "Kalees", "Maran", "Mahesh", "Kavinath"];
       const newPerson = {
         id: Math.random(),
-        name: names[Math.abs(Math.floor(Math.random() * 10 - 5))],
-        weight: Math.abs(Math.floor(Math.random() * 100 - 60)),
+        name: action.payload.name,
+        weight: action.payload.weight,
       };
-      const addedPersons = [...state.persons];
-      addedPersons.push(newPerson);
       return {
         ...state,
-        persons: addedPersons,
+        persons: state.persons.concat(newPerson),
       };
 
     case actionTypes.REMOVE_PERSON:
-      let removedPersons = state.persons.filter(
-        (person) => person.id !== action.payload.id
-      );
       return {
         ...state,
-        persons: removedPersons,
+        persons: state.persons.filter(
+          (person) => person.id !== action.payload.id
+        ),
       };
 
     default:

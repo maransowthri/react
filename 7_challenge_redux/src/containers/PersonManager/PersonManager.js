@@ -6,10 +6,40 @@ import classes from "./PersonManager.module.css";
 import * as actionTypes from "../../store/actions";
 
 class PersonManager extends Component {
+  state = {
+    name: "",
+    weight: "",
+  };
+
+  nameOnChangeHandler = (event) => {
+    this.setState({ name: event.target.value });
+  };
+
+  weightOnChangeHandler = (event) => {
+    this.setState({ weight: event.target.value });
+  };
+
   render() {
     return (
-      <div>
-        <button onClick={this.props.onAddPerson} className={classes.Button}>
+      <div className={classes.PersonManager}>
+        <input
+          type="text"
+          placeholder="Name"
+          value={this.state.name}
+          onChange={this.nameOnChangeHandler}
+        />
+        <input
+          type="text"
+          placeholder="Weight"
+          value={this.state.weight}
+          onChange={this.weightOnChangeHandler}
+        />
+        <button
+          onClick={() =>
+            this.props.onAddPerson(this.state.name, this.state.weight)
+          }
+          className={classes.Button}
+        >
           Add Person
         </button>
         <button
@@ -36,7 +66,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAddPerson: () => dispatch({ type: actionTypes.ADD_PERSON }),
+    onAddPerson: (name, weight) =>
+      dispatch({
+        type: actionTypes.ADD_PERSON,
+        payload: { name: name, weight: weight },
+      }),
     onCalculateAvg: (persons) =>
       dispatch({
         type: actionTypes.CALCULATE_AVG,

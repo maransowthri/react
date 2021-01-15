@@ -10,3 +10,10 @@
 .Button:hover {
   background: navy;
 }
+
+.PersonManager input {
+  display: block;
+  margin: auto;
+  margin-top: 1rem;
+  padding: 1rem;
+}
