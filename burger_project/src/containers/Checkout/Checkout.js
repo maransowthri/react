@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import CheckoutSummary from "../../components/Burger/Order/CheckoutSummary/CheckoutSummary";
 import ContactDetails from "./ContactDetails/ContactDetails";
+import * as actions from "../../store/actions/index";
 
 class Checkout extends Component {
   checkoutCancelHandler = () => {
@@ -19,6 +20,7 @@ class Checkout extends Component {
       <div>
         {this.props.ingredients ? (
           <>
+            {this.props.purchased ? <Redirect to="/" /> : null}
             <CheckoutSummary
               checkoutCancelHandler={this.checkoutCancelHandler}
               ingredients={this.props.ingredients}
@@ -29,14 +31,25 @@ class Checkout extends Component {
               component={ContactDetails}
             />
           </>
-        ) : null}
+        ) : (
+          <Redirect to="/" />
+        )}
       </div>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  return { ingredients: state.ingredients };
+  return {
+    ingredients: state.burgerBuilder.ingredients,
+    purchased: state.order.purchased,
+  };
 };
 
-export default connect(mapStateToProps)(Checkout);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onPurchaseInit: dispatch(actions.placeOrderInit()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);
