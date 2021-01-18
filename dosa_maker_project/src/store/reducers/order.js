@@ -4,16 +4,16 @@ import { updateObject } from "../utility";
 const initialState = {
   orders: [],
   loading: false,
+  error: "",
   purchased: false,
-  error: false,
 };
 
-const placeOrderInit = (state, action) => {
-  return updateObject(state, { purchased: false });
+export const placeOrderInit = (state, action) => {
+  return updateObject(state, { error: "", purchased: false });
 };
 
 const placeOrderInProgress = (state, action) => {
-  return updateObject(state, { loading: true, purchased: false });
+  return updateObject(state, { loading: true, error: "", purchased: false });
 };
 
 const placeOrderSuccess = (state, action) => {
@@ -25,15 +25,15 @@ const placeOrderSuccess = (state, action) => {
 };
 
 const placeOrderFailed = (state, action) => {
-  return updateObject(state, { error: true, loading: false });
+  return updateObject(state, { loading: false, error: action.payload.error });
 };
 
 const fetchOrdersInit = (state, action) => {
-  return { ...state };
+  return updateObject(state, { error: "" });
 };
 
 const fetchOrdersInProgress = (state, action) => {
-  return updateObject(state, { loading: true, error: false });
+  return updateObject(state, { loading: true, error: "" });
 };
 
 const fetchOrdersSuccess = (state, action) => {
@@ -44,7 +44,7 @@ const fetchOrdersSuccess = (state, action) => {
 };
 
 const fetchOrdersFailed = (state, action) => {
-  return updateObject(state, { error: true, loading: false });
+  return updateObject(state, { loading: false, error: action.payload.error });
 };
 
 const reducer = (state = initialState, action) => {

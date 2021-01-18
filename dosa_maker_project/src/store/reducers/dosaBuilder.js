@@ -1,16 +1,15 @@
 import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../utility";
 
-export const INGREDIENTS = {
-  salad: { label: "Salad", unitPrice: 0.4 },
-  bacon: { label: "Bacon", unitPrice: 0.7 },
-  cheese: { label: "Cheese", unitPrice: 0.5 },
-  meat: { label: "Meat", unitPrice: 1.3 },
+export const INGREDINETS = {
+  cheese: { label: "Cheese", unitPrice: 1.2 },
+  mushroom: { label: "Mushroom", unitPrice: 0.5 },
 };
 
 const initialState = {
   ingredients: null,
-  totalPrice: 4,
+  totalPrice: 0,
+  loading: false,
   error: false,
 };
 
@@ -23,7 +22,7 @@ const addIngredient = (state, action) => {
   const updatedState = updateObject(state, {
     ingredients: updatedIngredients,
     totalPrice: +(
-      state.totalPrice + INGREDIENTS[action.payload.ingredient].unitPrice
+      state.totalPrice + INGREDINETS[action.payload.ingredient].unitPrice
     ).toFixed(2),
   });
   return updatedState;
@@ -38,22 +37,33 @@ const removeIngredient = (state, action) => {
   const updatedState = updateObject(state, {
     ingredients: updatedIngredients,
     totalPrice: +(
-      state.totalPrice - INGREDIENTS[action.payload.ingredient].unitPrice
+      state.totalPrice - INGREDINETS[action.payload.ingredient].unitPrice
     ).toFixed(2),
   });
   return updatedState;
 };
 
-const fetchIngredientsSuccess = (state, action) => {
+const fetchIngredientsInit = (state, action) => {
   return updateObject(state, {
-    ingredients: action.payload.ingredients,
+    loading: false,
     error: false,
     totalPrice: 4,
   });
 };
 
-const fetchIngredientsFailed = (state, action) => {
-  return updateObject(state, { error: true });
+const fetchIngredientsInProgress = (state, action) => {
+  return updateObject(state, { loading: true });
+};
+
+const fetchIngredientsSuccess = (state, action) => {
+  return updateObject(state, {
+    ingredients: action.payload.ingredients,
+    loading: false,
+  });
+};
+
+const fetchIngredientsFailed = (state, actions) => {
+  return updateObject(state, { loading: false, error: true });
 };
 
 const reducer = (state = initialState, action) => {
@@ -62,6 +72,10 @@ const reducer = (state = initialState, action) => {
       return addIngredient(state, action);
     case actionTypes.REMOVE_INGREDIENT:
       return removeIngredient(state, action);
+    case actionTypes.FETCH_INGREDIENTS_INIT:
+      return fetchIngredientsInit(state, action);
+    case actionTypes.FETCH_INGREDIENTS_INPROGRESS:
+      return fetchIngredientsInProgress(state, action);
     case actionTypes.FETCH_INGREDIENTS_SUCCESS:
       return fetchIngredientsSuccess(state, action);
     case actionTypes.FETCH_INGREDIENTS_FAILED:

@@ -1,5 +1,5 @@
 import classes from "./OrderSummary.module.css";
-import { INGREDINETS } from "../../../store/reducer";
+import { INGREDINETS } from "../../../store/reducers/dosaBuilder";
 import Button from "../../UI/Button/Button";
 
 const OrderSummary = (props) => {

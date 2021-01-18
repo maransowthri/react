@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 import axios from "../../../axios/axios-orders";
 import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import classes from "./ContactDetails.module.css";
 import Input from "../../../components/UI/Input/Input";
+import * as actions from "../../../store/actions/index";
+import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 
 class ContactDetails extends Component {
   state = {
-    loading: false,
     formIsValid: false,
     orderForm: {
       name: {
@@ -117,9 +119,6 @@ class ContactDetails extends Component {
   };
 
   placeOrder = () => {
-    this.setState((prevState) => {
-      return { loading: true };
-    });
     const contactDetails = Object.keys(this.state.orderForm).reduce(
       (prev, next) => {
         prev[next] = this.state.orderForm[next].value;
@@ -132,15 +131,7 @@ class ContactDetails extends Component {
       totalPrice: this.props.totalPrice,
       contactDetails: contactDetails,
     };
-    axios
-      .post("orders.json", order)
-      .then((res) => {
-        this.setState({ modalState: false, loading: false });
-        this.props.history.push("/");
-      })
-      .catch((err) => {
-        this.setState({ modalState: false, loading: false });
-      });
+    this.props.onPlaceOrder(order);
   };
 
   render() {
@@ -157,11 +148,13 @@ class ContactDetails extends Component {
       />
     ));
 
-    return (
-      <div className={classes.ContactDetails}>
-        {this.state.loading ? (
-          <Spinner />
-        ) : (
+    let summary = <Spinner />;
+
+    if (!this.props.loading) {
+      if (this.props.purchased) {
+        summary = <Redirect to="/" />;
+      } else {
+        summary = (
           <>
             <h1>Contact Details</h1>
             {inputElements}
@@ -173,14 +166,30 @@ class ContactDetails extends Component {
               Place Order
             </Button>
           </>
-        )}
-      </div>
-    );
+        );
+      }
+    }
+
+    return <div className={classes.ContactDetails}>{summary}</div>;
   }
 }
 
 const mapStateToProps = (state) => {
-  return { ingredients: state.ingredients, totalPrice: state.totalPrice };
+  return {
+    ingredients: state.dosaBuilder.ingredients,
+    totalPrice: state.dosaBuilder.totalPrice,
+    purchased: state.order.purchased,
+    error: state.order.error,
+  };
 };
 
-export default connect(mapStateToProps)(ContactDetails);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onPlaceOrder: (order) => dispatch(actions.placeOrder(order)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(ContactDetails, axios));

@@ -8,17 +8,26 @@ import OrderSummary from "../../components/Dosa/OrderSummary/OrderSummary";
 import Modal from "../../components/UI/Modal/Modal";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
-import * as actionTypes from "../../store/actions";
+import * as actions from "../../store/actions/index";
 
 class DosaBuilder extends Component {
+  constructor(props) {
+    console.log("[DosaBuilder] constructor");
+    super(props);
+    this.props.onFetchIngredientsInit();
+  }
+
   state = {
-    modalState: false,
-    loading: false,
+    purchasing: false,
   };
+
+  componentDidMount() {
+    this.props.onFetchIngredients();
+  }
 
   modalHandler = () => {
     this.setState((prevState) => {
-      return { modalState: !prevState.modalState };
+      return { purchasing: !prevState.purchasing };
     });
   };
 
@@ -54,13 +63,13 @@ class DosaBuilder extends Component {
       dosa = <Spinner />;
     }
 
-    if (this.state.loading) {
+    if (this.props.loading) {
       summary = <Spinner />;
     }
 
     return (
       <>
-        <Modal click={this.modalHandler} state={this.state.modalState}>
+        <Modal click={this.modalHandler} state={this.state.purchasing}>
           {summary}
         </Modal>
         {dosa}
@@ -70,21 +79,21 @@ class DosaBuilder extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return { ingredients: state.ingredients, totalPrice: state.totalPrice };
+  return {
+    ingredients: state.dosaBuilder.ingredients,
+    totalPrice: state.dosaBuilder.totalPrice,
+    loading: state.dosaBuilder.loading,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onAddIngredient: (ingredient) =>
-      dispatch({
-        type: actionTypes.ADD_INGREDIENT,
-        payload: { ingredient: ingredient },
-      }),
+      dispatch(actions.addIngredient(ingredient)),
     onRemoveIngredient: (ingredient) =>
-      dispatch({
-        type: actionTypes.REMOVE_INGREDIENT,
-        payload: { ingredient: ingredient },
-      }),
+      dispatch(actions.removeIngredient(ingredient)),
+    onFetchIngredients: () => dispatch(actions.fetchIngredients()),
+    onFetchIngredientsInit: () => dispatch(actions.fetchIngredientsInit()),
   };
 };
 
