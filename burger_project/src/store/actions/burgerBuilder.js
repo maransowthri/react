@@ -15,6 +15,12 @@ export const removeIngredient = (ingredient) => {
   };
 };
 
+export const fetchIngredientsInProgress = () => {
+  return {
+    type: actionTypes.FETCH_INGREDIENTS_INPROGRESS,
+  };
+};
+
 export const fetchIngredientsSuccess = (ingredients) => {
   return {
     type: actionTypes.FETCH_INGREDIENTS_SUCCESS,
@@ -28,15 +34,37 @@ export const fetchIngredientsFailed = () => {
   };
 };
 
-export const fetchIngredients = () => {
+const preservedIngredientsSuccess = (ingredients, totalPrice) => {
+  return {
+    type: actionTypes.PRESERVED_INGREDINETS_SUCCESS,
+    payload: { ingredients, totalPrice },
+  };
+};
+
+export const setPreserveIngredients = () => {
+  return {
+    type: actionTypes.SET_PRESERVE_INGREDIENTS,
+  };
+};
+
+export const fetchIngredients = (
+  preserveIngredients,
+  ingredients,
+  totalPrice
+) => {
   return (dispatch) => {
-    axios
-      .get("ingredients.json")
-      .then((res) => {
-        dispatch(fetchIngredientsSuccess(res.data));
-      })
-      .catch((err) => {
-        dispatch(fetchIngredientsFailed());
-      });
+    if (preserveIngredients) {
+      dispatch(preservedIngredientsSuccess(ingredients, totalPrice));
+    } else {
+      dispatch(fetchIngredientsInProgress());
+      axios
+        .get("ingredients.json")
+        .then((res) => {
+          dispatch(fetchIngredientsSuccess(res.data));
+        })
+        .catch((err) => {
+          dispatch(fetchIngredientsFailed());
+        });
+    }
   };
 };

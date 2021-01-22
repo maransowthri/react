@@ -127,8 +127,9 @@ class ContactDetails extends Component {
       ingredients: this.props.ingredients,
       totalPrice: this.props.totalPrice,
       orderData: orderData,
+      userID: this.props.userID,
     };
-    this.props.onPlaceOrder(order);
+    this.props.onPlaceOrder(order, this.props.token);
   };
 
   inputChangedHandler = (event, key) => {
@@ -211,12 +212,14 @@ const mapStateToProps = (state) => {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
+    token: state.auth.token,
+    userID: state.auth.userID,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onPlaceOrder: (order) => dispatch(actions.placeOrder(order)),
+    onPlaceOrder: (order, token) => dispatch(actions.placeOrder(order, token)),
   };
 };
 

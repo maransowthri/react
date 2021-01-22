@@ -26,11 +26,11 @@ const placeOrderFailed = () => {
   };
 };
 
-export const placeOrder = (order) => {
+export const placeOrder = (order, token) => {
   return (dispatch) => {
     dispatch(placeOrderInprogress());
     axios
-      .post("orders.json", order)
+      .post("orders.json?auth=" + token, order)
       .then((res) => {
         dispatch(placeOrderSuccess(order));
       })
@@ -66,11 +66,13 @@ export const fetchOrdersFailed = () => {
   };
 };
 
-export const fetchOrders = () => {
+export const fetchOrders = (token, userID) => {
   return (dispatch) => {
     dispatch(fetchOrdersInProgress());
+    const queryParam =
+      "?auth=" + token + '&orderBy="userID"&equalTo="' + userID + '"';
     axios
-      .get("orders.json")
+      .get("orders.json" + queryParam)
       .then((res) => {
         dispatch(fetchOrdersSuccess(res.data));
       })

@@ -18,13 +18,20 @@ export const INGREDIENTS = {
 };
 
 class BurgerBuilder extends Component {
+  constructor(props) {
+    super(props);
+    this.props.onFetchIngredients(
+      this.props.preserveIngredients,
+      this.props.ingredients,
+      this.props.totalPrice
+    );
+  }
+
   state = {
     purchasing: false,
   };
 
-  componentDidMount() {
-    this.props.onFetchIngredients();
-  }
+  componentDidMount() {}
 
   updatePurchasable = (ingredients) => {
     const ingredientsSum = Object.keys(ingredients)
@@ -34,7 +41,12 @@ class BurgerBuilder extends Component {
   };
 
   purchaseHandler = () => {
-    this.setState({ purchasing: true });
+    if (this.props.isAuthenticated) {
+      this.setState({ purchasing: true });
+    } else {
+      this.props.onSetPreserveIngredients();
+      this.props.history.push("/login");
+    }
   };
 
   purchaseCancelHandler = () => {
@@ -60,8 +72,8 @@ class BurgerBuilder extends Component {
       );
       burger = (
         <>
-          <Burger ingredients={this.props.ingredients} />
           <BuildControls
+            isAuthenticated={this.props.isAuthenticated}
             addIngredient={this.props.onAddIngredient}
             removeIngredient={this.props.onRemoveIngredient}
             ingredientsDisabled={ingredientsDisabled}
@@ -86,6 +98,7 @@ class BurgerBuilder extends Component {
         <Modal show={this.state.purchasing} close={this.purchaseCancelHandler}>
           {summary}
         </Modal>
+        <Burger ingredients={this.props.ingredients} />
         {burger}
       </>
     );
@@ -97,6 +110,8 @@ const mapStateToProps = (state) => {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
     error: state.burgerBuilder.error,
+    preserveIngredients: state.burgerBuilder.preserveIngredients,
+    isAuthenticated: state.auth.token != null,
   };
 };
 
@@ -106,7 +121,11 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actions.addIngredient(ingredient)),
     onRemoveIngredient: (ingredient) =>
       dispatch(actions.removeIngredient(ingredient)),
-    onFetchIngredients: () => dispatch(actions.fetchIngredients()),
+    onFetchIngredients: (preserveIngredients, ingredients, totalPrice) =>
+      dispatch(
+        actions.fetchIngredients(preserveIngredients, ingredients, totalPrice)
+      ),
+    onSetPreserveIngredients: () => dispatch(actions.setPreserveIngredients()),
   };
 };
 

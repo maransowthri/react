@@ -12,6 +12,7 @@ const initialState = {
   ingredients: null,
   totalPrice: 4,
   error: false,
+  preserveIngredients: false,
 };
 
 const addIngredient = (state, action) => {
@@ -44,16 +45,35 @@ const removeIngredient = (state, action) => {
   return updatedState;
 };
 
+const fetchIngredientsInProgress = (state, action) => {
+  return {
+    ingredients: null,
+  };
+};
+
 const fetchIngredientsSuccess = (state, action) => {
   return updateObject(state, {
     ingredients: action.payload.ingredients,
     error: false,
     totalPrice: 4,
+    preserveIngredients: false,
   });
 };
 
 const fetchIngredientsFailed = (state, action) => {
   return updateObject(state, { error: true });
+};
+
+const setPreserveIngredients = (state, action) => {
+  return updateObject(state, { preserveIngredients: true });
+};
+
+const preservedIngredientsSuccess = (state, action) => {
+  return updateObject(state, {
+    ingredients: action.payload.ingredients,
+    totalPrice: action.payload.totalPrice,
+    preserveIngredients: false,
+  });
 };
 
 const reducer = (state = initialState, action) => {
@@ -62,10 +82,16 @@ const reducer = (state = initialState, action) => {
       return addIngredient(state, action);
     case actionTypes.REMOVE_INGREDIENT:
       return removeIngredient(state, action);
+    case actionTypes.FETCH_INGREDIENTS_INPROGRESS:
+      return fetchIngredientsInProgress(state, action);
     case actionTypes.FETCH_INGREDIENTS_SUCCESS:
       return fetchIngredientsSuccess(state, action);
     case actionTypes.FETCH_INGREDIENTS_FAILED:
       return fetchIngredientsFailed(state, action);
+    case actionTypes.SET_PRESERVE_INGREDIENTS:
+      return setPreserveIngredients(state, action);
+    case actionTypes.PRESERVED_INGREDINETS_SUCCESS:
+      return preservedIngredientsSuccess(state, action);
     default:
       return state;
   }
