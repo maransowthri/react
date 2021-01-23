@@ -12,7 +12,7 @@ const SideDrawer = (props) => {
           props.sideDrawerState ? classes.Open : classes.Close,
         ].join(" ")}
       >
-        <NavigationItems />
+        <NavigationItems isAuthenticated={props.isAuthenticated} />
       </div>
     </>
   );

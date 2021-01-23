@@ -130,6 +130,7 @@ class ContactDetails extends Component {
       ingredients: this.props.ingredients,
       totalPrice: this.props.totalPrice,
       contactDetails: contactDetails,
+      userID: this.props.userID,
     };
     this.props.onPlaceOrder(order);
   };
@@ -180,6 +181,7 @@ const mapStateToProps = (state) => {
     totalPrice: state.dosaBuilder.totalPrice,
     purchased: state.order.purchased,
     error: state.order.error,
+    userID: state.auth.userID,
   };
 };
 

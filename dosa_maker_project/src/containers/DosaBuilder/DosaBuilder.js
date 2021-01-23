@@ -12,23 +12,23 @@ import * as actions from "../../store/actions/index";
 
 class DosaBuilder extends Component {
   constructor(props) {
-    console.log("[DosaBuilder] constructor");
     super(props);
-    this.props.onFetchIngredientsInit();
+    this.props.onFetchIngredients(this.props.preserveIngredients);
   }
 
   state = {
     purchasing: false,
   };
 
-  componentDidMount() {
-    this.props.onFetchIngredients();
-  }
-
   modalHandler = () => {
-    this.setState((prevState) => {
-      return { purchasing: !prevState.purchasing };
-    });
+    if (this.props.isAuthenticated) {
+      this.setState((prevState) => {
+        return { purchasing: !prevState.purchasing };
+      });
+    } else {
+      this.props.onSetPreserveIngredients();
+      this.props.history.push("/login");
+    }
   };
 
   orderedHandler = () => {
@@ -42,8 +42,8 @@ class DosaBuilder extends Component {
     if (this.props.ingredients) {
       dosa = (
         <>
-          <DosaIngredients ingredients={this.props.ingredients} />
           <DosaControls
+            isAuthenticated={this.props.isAuthenticated}
             totalPrice={this.props.totalPrice}
             addIngredient={this.props.onAddIngredient}
             removeIngredient={this.props.onRemoveIngredient}
@@ -72,6 +72,7 @@ class DosaBuilder extends Component {
         <Modal click={this.modalHandler} state={this.state.purchasing}>
           {summary}
         </Modal>
+        <DosaIngredients ingredients={this.props.ingredients} />
         {dosa}
       </>
     );
@@ -83,6 +84,8 @@ const mapStateToProps = (state) => {
     ingredients: state.dosaBuilder.ingredients,
     totalPrice: state.dosaBuilder.totalPrice,
     loading: state.dosaBuilder.loading,
+    isAuthenticated: state.auth.token !== null,
+    preserveIngredients: state.dosaBuilder.preserveIngredients,
   };
 };
 
@@ -92,8 +95,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actions.addIngredient(ingredient)),
     onRemoveIngredient: (ingredient) =>
       dispatch(actions.removeIngredient(ingredient)),
-    onFetchIngredients: () => dispatch(actions.fetchIngredients()),
-    onFetchIngredientsInit: () => dispatch(actions.fetchIngredientsInit()),
+    onFetchIngredients: (preserveIngredients) =>
+      dispatch(actions.fetchIngredients(preserveIngredients)),
+    onSetPreserveIngredients: () => dispatch(actions.setPreserveingredients()),
   };
 };
 

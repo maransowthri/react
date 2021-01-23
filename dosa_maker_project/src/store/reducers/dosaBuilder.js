@@ -11,6 +11,7 @@ const initialState = {
   totalPrice: 0,
   loading: false,
   error: false,
+  preserveIngredients: false,
 };
 
 const addIngredient = (state, action) => {
@@ -29,6 +30,7 @@ const addIngredient = (state, action) => {
 };
 
 const removeIngredient = (state, action) => {
+  console.log(action.payload);
   const updatedIngredient = {
     [action.payload.ingredient]:
       state.ingredients[action.payload.ingredient] - 1,
@@ -43,27 +45,28 @@ const removeIngredient = (state, action) => {
   return updatedState;
 };
 
-const fetchIngredientsInit = (state, action) => {
-  return updateObject(state, {
-    loading: false,
-    error: false,
-    totalPrice: 4,
-  });
-};
-
 const fetchIngredientsInProgress = (state, action) => {
-  return updateObject(state, { loading: true });
+  return updateObject(state, { loading: true, error: false, totalPrice: 4 });
 };
 
 const fetchIngredientsSuccess = (state, action) => {
   return updateObject(state, {
     ingredients: action.payload.ingredients,
     loading: false,
+    preserveIngredients: false,
   });
 };
 
 const fetchIngredientsFailed = (state, actions) => {
   return updateObject(state, { loading: false, error: true });
+};
+
+const setPreserveIngredients = (state, action) => {
+  return updateObject(state, { preserveIngredients: true });
+};
+
+const removePreserveIngredients = (state, action) => {
+  return updateObject(state, { preserveIngredients: false });
 };
 
 const reducer = (state = initialState, action) => {
@@ -72,14 +75,16 @@ const reducer = (state = initialState, action) => {
       return addIngredient(state, action);
     case actionTypes.REMOVE_INGREDIENT:
       return removeIngredient(state, action);
-    case actionTypes.FETCH_INGREDIENTS_INIT:
-      return fetchIngredientsInit(state, action);
     case actionTypes.FETCH_INGREDIENTS_INPROGRESS:
       return fetchIngredientsInProgress(state, action);
     case actionTypes.FETCH_INGREDIENTS_SUCCESS:
       return fetchIngredientsSuccess(state, action);
     case actionTypes.FETCH_INGREDIENTS_FAILED:
       return fetchIngredientsFailed(state, action);
+    case actionTypes.SET_PRESERVE_INGREDIENTS:
+      return setPreserveIngredients(state, action);
+    case actionTypes.REMOVE_PRESERVE_INGREDIENTS:
+      return removePreserveIngredients(state, action);
     default:
       return state;
   }

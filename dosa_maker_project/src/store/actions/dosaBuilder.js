@@ -40,16 +40,32 @@ const fetchIngredientsFailed = () => {
   };
 };
 
-export const fetchIngredients = () => {
+export const fetchIngredients = (preserveIngredients) => {
   return (dispatch) => {
-    dispatch(fetchIngredientsInProgress());
-    axios
-      .get("ingredients.json")
-      .then((res) => {
-        dispatch(fetchIngredientsSuccess(res.data));
-      })
-      .catch((err) => {
-        dispatch(fetchIngredientsFailed());
-      });
+    if (preserveIngredients) {
+      dispatch(removePreserveIngredients());
+    } else {
+      dispatch(fetchIngredientsInProgress());
+      axios
+        .get("ingredients.json")
+        .then((res) => {
+          dispatch(fetchIngredientsSuccess(res.data));
+        })
+        .catch((err) => {
+          dispatch(fetchIngredientsFailed());
+        });
+    }
+  };
+};
+
+export const setPreserveingredients = () => {
+  return {
+    type: actionTypes.SET_PRESERVE_INGREDIENTS,
+  };
+};
+
+const removePreserveIngredients = () => {
+  return {
+    type: actionTypes.REMOVE_PRESERVE_INGREDIENTS,
   };
 };

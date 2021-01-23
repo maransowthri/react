@@ -21,7 +21,7 @@ const DosaControls = (props) => {
       {controls}
       <div className={classes.Button}>
         <Button click={props.modalHandler} type="Success">
-          ORDER NOW!
+          {props.isAuthenticated ? "ORDER NOW!" : "SignUp to continue"}
         </Button>
       </div>
     </div>
