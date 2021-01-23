@@ -8,6 +8,7 @@ import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
 import * as actions from "../../../store/actions/index";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
+import { validateRules } from "../../../shared/validation";
 
 class ContactDetails extends Component {
   state = {
@@ -97,26 +98,6 @@ class ContactDetails extends Component {
     },
   };
 
-  validateRules(value, rules) {
-    if (rules.required) {
-      if (value.trim().length <= 0) {
-        return false;
-      }
-    }
-    if (rules.minLength) {
-      if (value.trim().length < rules.minLength) {
-        return false;
-      }
-    }
-
-    if (rules.maxLength) {
-      if (value.trim().length > rules.maxLength) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   orderHandler = (e) => {
     e.preventDefault();
     const orderData = Object.keys(this.state.orderForm).reduce((prev, next) => {
@@ -148,7 +129,7 @@ class ContactDetails extends Component {
     updatedInput.value = event.target.value;
     if (updatedInput.validation) {
       updatedInput.validation.touched = true;
-      updatedInput.validation.valid = this.validateRules(
+      updatedInput.validation.valid = validateRules(
         updatedInput.value,
         updatedInput.validation.rules
       );

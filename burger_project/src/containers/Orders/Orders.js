@@ -38,6 +38,7 @@ class Orders extends Component {
 
     let redirect = null;
     if (!this.props.token) {
+      this.props.onSetAlert("Please login to see your orders!");
       redirect = <Redirect to="/login" />;
     }
 
@@ -66,6 +67,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onFetchOrders: (token, userID) =>
       dispatch(actions.fetchOrders(token, userID)),
+    onSetAlert: (message) => dispatch(actions.setAlert(message)),
   };
 };
 

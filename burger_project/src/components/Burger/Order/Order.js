@@ -4,7 +4,11 @@ const Order = (props) => {
   const ingredients = Object.keys(props.ingredients).map((key) => {
     return (
       <span
-        style={{ border: "1px solid #333", margin: "5px", padding: ".3rem" }}
+        style={{
+          border: "1px solid #333",
+          margin: "2rem 0",
+          padding: ".3rem",
+        }}
         key={key}
       >
         <span style={{ textTransform: "capitalize" }}>{key}</span>
@@ -14,7 +18,8 @@ const Order = (props) => {
   });
   return (
     <div className={classes.Order}>
-      <p>Ingredients: {ingredients}</p>
+      <p>Ingredients:</p>
+      <p>{ingredients}</p>
       <p>
         Price: <strong>${props.price}</strong>
       </p>

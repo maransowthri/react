@@ -1,8 +1,11 @@
 .Auth {
+  margin: auto;
   text-align: center;
+  width: 50%;
 }
 
-.Auth form {
-  width: 50%;
-  margin: auto;
+@media (max-width: 500px) {
+  .Auth {
+    width: 100%;
+  }
 }

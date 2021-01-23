@@ -6,6 +6,8 @@ const initialState = {
   userID: null,
   error: null,
   loading: false,
+  showAlert: false,
+  alertMessage: "",
 };
 
 const authInProgress = (state, action) => {
@@ -28,6 +30,17 @@ const logout = (state, action) => {
   return updateObject(state, { userID: null, token: null });
 };
 
+const setAlert = (state, action) => {
+  return updateObject(state, {
+    showAlert: true,
+    alertMessage: action.payload.alertMessage,
+  });
+};
+
+const removeAlert = (state, action) => {
+  return updateObject(state, { showAlert: false, alertMessage: "" });
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.AUTH_INPROGRESS:
@@ -38,6 +51,10 @@ const reducer = (state = initialState, action) => {
       return authFailed(state, action);
     case actionTypes.LOGOUT:
       return logout(state, action);
+    case actionTypes.SET_ALERT:
+      return setAlert(state, action);
+    case actionTypes.REMOVE_ALERT:
+      return removeAlert(state, action);
     default:
       return state;
   }

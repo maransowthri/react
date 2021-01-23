@@ -9,4 +9,4 @@ export {
 
 export { placeOrder, placeOrderInit, fetchOrders } from "./order";
 
-export { auth, logout, autoSignIn } from "./auth";
+export { auth, logout, autoSignIn, setAlert, removeAlert } from "./auth";

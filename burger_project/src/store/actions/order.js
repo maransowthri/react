@@ -35,7 +35,6 @@ export const placeOrder = (order, token) => {
         dispatch(placeOrderSuccess(order));
       })
       .catch((err) => {
-        console.log(err);
         dispatch(placeOrderFailed());
       });
   };

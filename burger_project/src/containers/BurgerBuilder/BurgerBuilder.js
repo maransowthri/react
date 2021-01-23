@@ -45,6 +45,7 @@ class BurgerBuilder extends Component {
       this.setState({ purchasing: true });
     } else {
       this.props.onSetPreserveIngredients();
+      this.props.onSetAlert("Please login to place your order!");
       this.props.history.push("/login");
     }
   };
@@ -126,6 +127,9 @@ const mapDispatchToProps = (dispatch) => {
         actions.fetchIngredients(preserveIngredients, ingredients, totalPrice)
       ),
     onSetPreserveIngredients: () => dispatch(actions.setPreserveIngredients()),
+    onSetAlert: (message) => {
+      dispatch(actions.setAlert(message));
+    },
   };
 };
 

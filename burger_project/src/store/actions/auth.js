@@ -66,13 +66,25 @@ export const auth = (email, password, type) => {
         localStorage.setItem("token", res.data.idToken);
         localStorage.setItem("expiryDate", expiryDate);
         localStorage.setItem("userID", res.data.localId);
-        console.log(res.data);
         dispatch(authSuccess(res.data));
         dispatch(setExpiration(+res.data.expiresIn));
       })
       .catch((err) => {
         dispatch(authFailed(err.message));
       });
+  };
+};
+
+export const setAlert = (message) => {
+  return {
+    type: actionTypes.SET_ALERT,
+    payload: { alertMessage: message },
+  };
+};
+
+export const removeAlert = () => {
+  return {
+    type: actionTypes.REMOVE_ALERT,
   };
 };
 

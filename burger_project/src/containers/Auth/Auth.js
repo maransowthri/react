@@ -9,6 +9,8 @@ import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import axios from "../../axios/axios-auth";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import { Redirect } from "react-router-dom";
+import Alert from "../../components/UI/Alert/Alert";
+import { validateRules } from "../../shared/validation";
 
 class Auth extends Component {
   state = {
@@ -78,7 +80,7 @@ class Auth extends Component {
         value: event.target.value,
         validation: {
           ...this.state.controls[key].validation,
-          valid: this.validateRules(
+          valid: validateRules(
             event.target.value,
             this.state.controls[key].validation.rules
           ),
@@ -88,35 +90,6 @@ class Auth extends Component {
     };
     this.setState({ controls: updatedControls });
   };
-
-  validateRules(value, rules) {
-    if (rules.required) {
-      if (value.trim().length <= 0) {
-        return false;
-      }
-    }
-
-    if (rules.minLength) {
-      if (value.trim().length < rules.minLength) {
-        return false;
-      }
-    }
-
-    if (rules.maxLength) {
-      if (value.trim().length > rules.maxLength) {
-        return false;
-      }
-    }
-
-    if (rules.isEmail) {
-      const re = /^[\w]{1,16}@[\w]{2,16}\.[\w]{3,5}$/;
-      if (!re.test(String(value).toLowerCase())) {
-        return false;
-      }
-    }
-
-    return true;
-  }
 
   render() {
     const inputEls = this.props.loading ? (
@@ -150,6 +123,13 @@ class Auth extends Component {
     );
 
     let redirect = this.props.isAuthenticated ? <Redirect to="/" /> : null;
+    let alert = null;
+    if (this.props.showAlert) {
+      alert = <Alert message={this.props.alertMessage} />;
+      setTimeout(() => {
+        this.props.onRemoveAlert();
+      }, 5000);
+    }
 
     return (
       <>
@@ -170,6 +150,7 @@ class Auth extends Component {
           <h3>
             {this.state.authType === actions.SIGNUP ? "Signup" : "SignIn"}
           </h3>
+          {alert}
           {this.props.error ? <p>{this.props.error}</p> : null}
           <>
             {inputEls}
@@ -191,6 +172,8 @@ const mapStateToProps = (state) => {
     loading: state.auth.loading,
     error: state.auth.error,
     isAuthenticated: state.auth.token !== null,
+    showAlert: state.auth.showAlert,
+    alertMessage: state.auth.alertMessage,
   };
 };
 
@@ -198,6 +181,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onAuth: (email, password, type) =>
       dispatch(actions.auth(email, password, type)),
+    onRemoveAlert: () => dispatch(actions.removeAlert()),
   };
 };
 
