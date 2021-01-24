@@ -17,7 +17,7 @@ export const INGREDIENTS = {
   meat: { label: "Meat", unitPrice: 1.3 },
 };
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
   constructor(props) {
     super(props);
     this.props.onFetchIngredients(
@@ -30,8 +30,6 @@ class BurgerBuilder extends Component {
   state = {
     purchasing: false,
   };
-
-  componentDidMount() {}
 
   updatePurchasable = (ingredients) => {
     const ingredientsSum = Object.keys(ingredients)
