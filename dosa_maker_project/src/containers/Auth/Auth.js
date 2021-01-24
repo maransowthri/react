@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 import Button from "../../components/UI/Button/Button";
 import Input from "../../components/UI/Input/Input";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import classes from "./Auth.module.css";
 import * as actions from "../../store/actions/index";
-import { Redirect } from "react-router-dom";
+import { validateRules } from "../../shared/validation";
 
 class Auth extends Component {
   state = {
@@ -53,26 +54,6 @@ class Auth extends Component {
     type: actions.SIGNIN,
   };
 
-  validateRules = (value, rules) => {
-    if (rules.required && value.trim().length <= 0) {
-      return false;
-    }
-    if (rules.minLength && rules.minLength > value.trim().length) {
-      return false;
-    }
-    if (rules.maxLength && rules.maxLength < value.trim().length) {
-      return false;
-    }
-
-    if (rules.isEmail) {
-      const re = /^\w{3,16}@\w{5,16}\.\w{2,4}$/;
-      if (!re.test(value)) {
-        return false;
-      }
-    }
-    return true;
-  };
-
   signInHandler = () => {
     this.setState({ type: actions.SIGNIN });
   };
@@ -86,7 +67,7 @@ class Auth extends Component {
     const updatedItem = { ...updatedForm[key] };
     updatedItem.value = event.target.value;
     updatedItem.validation.touched = true;
-    updatedItem.validation.valid = this.validateRules(
+    updatedItem.validation.valid = validateRules(
       event.target.value,
       updatedItem.validation.rules
     );

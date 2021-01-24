@@ -10,6 +10,7 @@ const DosaControls = (props) => {
       addIngredient={() => props.addIngredient(key)}
       removeIngredient={() => props.removeIngredient(key)}
       label={INGREDINETS[key].label}
+      disabled={props.disabledIngredients[key]}
     />
   ));
 
@@ -21,7 +22,7 @@ const DosaControls = (props) => {
       {controls}
       <div className={classes.Button}>
         <Button click={props.modalHandler} type="Success">
-          {props.isAuthenticated ? "ORDER NOW!" : "SignUp to continue"}
+          {props.isAuthenticated ? "ORDER NOW!" : "Signup to continue"}
         </Button>
       </div>
     </div>

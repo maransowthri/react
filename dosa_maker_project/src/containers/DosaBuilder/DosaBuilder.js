@@ -40,6 +40,13 @@ class DosaBuilder extends Component {
     let summary = null;
 
     if (this.props.ingredients) {
+      const disabledIngredients = Object.keys(this.props.ingredients).reduce(
+        (prev, next) => {
+          prev[next] = this.props.ingredients[next] === 0;
+          return prev;
+        },
+        {}
+      );
       dosa = (
         <>
           <DosaControls
@@ -48,6 +55,7 @@ class DosaBuilder extends Component {
             addIngredient={this.props.onAddIngredient}
             removeIngredient={this.props.onRemoveIngredient}
             modalHandler={this.modalHandler}
+            disabledIngredients={disabledIngredients}
           />
         </>
       );

@@ -9,6 +9,7 @@ import classes from "./ContactDetails.module.css";
 import Input from "../../../components/UI/Input/Input";
 import * as actions from "../../../store/actions/index";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
+import { validateRules } from "../../../shared/validation";
 
 class ContactDetails extends Component {
   state = {
@@ -89,25 +90,12 @@ class ContactDetails extends Component {
     },
   };
 
-  validateRules = (value, rules) => {
-    if (rules.required && value.trim().length <= 0) {
-      return false;
-    }
-    if (rules.minLength && rules.minLength > value.trim().length) {
-      return false;
-    }
-    if (rules.maxLength && rules.maxLength < value.trim().length) {
-      return false;
-    }
-    return true;
-  };
-
   inputChangeHandler = (event, key) => {
     const updatedOrderForm = { ...this.state.orderForm };
     const updatedFormItem = { ...updatedOrderForm[key] };
     updatedFormItem.value = event.target.value;
     updatedFormItem.validation.touched = true;
-    updatedFormItem.validation.valid = this.validateRules(
+    updatedFormItem.validation.valid = validateRules(
       event.target.value,
       updatedFormItem.validation.rules
     );
@@ -132,7 +120,7 @@ class ContactDetails extends Component {
       contactDetails: contactDetails,
       userID: this.props.userID,
     };
-    this.props.onPlaceOrder(order);
+    this.props.onPlaceOrder(order, this.props.token);
   };
 
   render() {
@@ -182,12 +170,13 @@ const mapStateToProps = (state) => {
     purchased: state.order.purchased,
     error: state.order.error,
     userID: state.auth.userID,
+    token: state.auth.token,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onPlaceOrder: (order) => dispatch(actions.placeOrder(order)),
+    onPlaceOrder: (order, token) => dispatch(actions.placeOrder(order, token)),
   };
 };
 

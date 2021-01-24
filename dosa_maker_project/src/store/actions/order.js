@@ -27,11 +27,11 @@ const placeOrderFailed = (error) => {
   };
 };
 
-export const placeOrder = (order) => {
+export const placeOrder = (order, token) => {
   return (dispatch) => {
     dispatch(placeOrderInProgress());
     axios
-      .post("orders.json", order)
+      .post("orders.json?auth=" + token, order)
       .then((res) => {
         dispatch(placeOrderSuccess(order));
       })

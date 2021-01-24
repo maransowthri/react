@@ -13,7 +13,6 @@ const authInProgress = (state, action) => {
 };
 
 const authSuccess = (state, action) => {
-  console.log(action.payload);
   return updateObject(state, {
     token: action.payload.token,
     userID: action.payload.userID,

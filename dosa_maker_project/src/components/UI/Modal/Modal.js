@@ -10,11 +10,7 @@ class Modal extends Component {
       nextState.children !== this.props.children
     );
   }
-
-  // componentDidUpdate() {
-  //   console.log("Modal updated!");
-  // }
-
+  
   render() {
     return (
       <>

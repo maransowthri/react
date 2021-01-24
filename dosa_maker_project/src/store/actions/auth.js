@@ -54,7 +54,6 @@ export const auth = (email, password, type) => {
         localStorage.setItem("userID", res.data.localId);
       })
       .catch((err) => {
-        console.log(err);
         dispatch(authFailed(err.message));
       });
   };

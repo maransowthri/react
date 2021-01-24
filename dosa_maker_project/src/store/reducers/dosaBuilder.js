@@ -30,7 +30,6 @@ const addIngredient = (state, action) => {
 };
 
 const removeIngredient = (state, action) => {
-  console.log(action.payload);
   const updatedIngredient = {
     [action.payload.ingredient]:
       state.ingredients[action.payload.ingredient] - 1,
