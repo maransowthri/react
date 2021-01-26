@@ -18,8 +18,7 @@ export const INGREDIENTS = {
 };
 
 export class BurgerBuilder extends Component {
-  constructor(props) {
-    super(props);
+  componentDidMount() {
     this.props.onFetchIngredients(
       this.props.preserveIngredients,
       this.props.ingredients,

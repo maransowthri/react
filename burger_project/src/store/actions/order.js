@@ -1,5 +1,4 @@
 import * as actionTypes from "./actionTypes";
-import axios from "../../axios/axios-orders";
 
 export const placeOrderInit = () => {
   return {
@@ -7,36 +6,29 @@ export const placeOrderInit = () => {
   };
 };
 
-const placeOrderInprogress = () => {
+export const placeOrderInprogress = () => {
   return {
     type: actionTypes.PLACE_ORDER_INPROGRESS,
   };
 };
 
-const placeOrderSuccess = (order) => {
+export const placeOrderSuccess = (order) => {
   return {
     type: actionTypes.PLACE_ORDER_SUCCESS,
     payload: { order },
   };
 };
 
-const placeOrderFailed = () => {
+export const placeOrderFailed = () => {
   return {
     type: actionTypes.PLACE_ORDER_FAILED,
   };
 };
 
 export const placeOrder = (order, token) => {
-  return (dispatch) => {
-    dispatch(placeOrderInprogress());
-    axios
-      .post("orders.json?auth=" + token, order)
-      .then((res) => {
-        dispatch(placeOrderSuccess(order));
-      })
-      .catch((err) => {
-        dispatch(placeOrderFailed());
-      });
+  return {
+    type: actionTypes.USER_PLACE_ORDER,
+    payload: { order, token },
   };
 };
 
@@ -66,17 +58,8 @@ export const fetchOrdersFailed = () => {
 };
 
 export const fetchOrders = (token, userID) => {
-  return (dispatch) => {
-    dispatch(fetchOrdersInProgress());
-    const queryParam =
-      "?auth=" + token + '&orderBy="userID"&equalTo="' + userID + '"';
-    axios
-      .get("orders.json" + queryParam)
-      .then((res) => {
-        dispatch(fetchOrdersSuccess(res.data));
-      })
-      .catch((err) => {
-        dispatch(fetchOrdersFailed());
-      });
+  return {
+    type: actionTypes.USER_FETCH_ORDERS,
+    payload: { token, userID },
   };
 };

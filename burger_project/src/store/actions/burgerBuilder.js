@@ -1,5 +1,4 @@
 import * as actionTypes from "./actionTypes";
-import axios from "../../axios/axios-orders";
 
 export const addIngredient = (ingredient) => {
   return {
@@ -34,7 +33,7 @@ export const fetchIngredientsFailed = () => {
   };
 };
 
-const preservedIngredientsSuccess = (ingredients, totalPrice) => {
+export const preservedIngredientsSuccess = (ingredients, totalPrice) => {
   return {
     type: actionTypes.PRESERVED_INGREDINETS_SUCCESS,
     payload: { ingredients, totalPrice },
@@ -52,19 +51,8 @@ export const fetchIngredients = (
   ingredients,
   totalPrice
 ) => {
-  return (dispatch) => {
-    if (preserveIngredients) {
-      dispatch(preservedIngredientsSuccess(ingredients, totalPrice));
-    } else {
-      dispatch(fetchIngredientsInProgress());
-      axios
-        .get("ingredients.json")
-        .then((res) => {
-          dispatch(fetchIngredientsSuccess(res.data));
-        })
-        .catch((err) => {
-          dispatch(fetchIngredientsFailed());
-        });
-    }
+  return {
+    type: actionTypes.FETCH_INGREDIENTS_INIT,
+    payload: { preserveIngredients, ingredients, totalPrice },
   };
 };
