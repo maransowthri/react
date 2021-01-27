@@ -10,4 +10,12 @@ export {
 
 export { placeOrder, fetchOrders, placeOrderInit } from "./order";
 
-export { auth, authLogout, autoSignIn } from "./auth";
+export {
+  auth,
+  authLogout,
+  autoSignIn,
+  authLogoutSucceed,
+  authInProgress,
+  authSuccess,
+  authFailed,
+} from "./auth";

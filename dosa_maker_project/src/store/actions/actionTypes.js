@@ -21,8 +21,10 @@ export const FETCH_ORDERS_FAILED = "FETCH_ORDERS_FAILED";
 // Auth
 export const SIGNUP = "SIGNUP";
 export const SIGNIN = "SIGNIN";
+export const USER_AUTH = "USER_AUTH";
 export const AUTH_INIT = "AUTH_INIT";
 export const AUTH_INPROGRESS = "AUTH_INPROGRESS";
 export const AUTH_SUCCESS = "AUTH_SUCCESS";
 export const AUTH_FAILED = "AUTH_FAILED";
+export const AUTH_LOGOUT_INIT = "AUTH_LOGOUT_INIT";
 export const AUTH_LOGOUT = "AUTH_LOGOUT";

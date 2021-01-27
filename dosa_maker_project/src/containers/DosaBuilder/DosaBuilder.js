@@ -11,8 +11,7 @@ import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import * as actions from "../../store/actions/index";
 
 class DosaBuilder extends Component {
-  constructor(props) {
-    super(props);
+  componentDidMount() {
     this.props.onFetchIngredients(this.props.preserveIngredients);
   }
 

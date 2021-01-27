@@ -21,10 +21,10 @@ const asyncOrders = asyncComponent(() => {
 });
 
 class App extends Component {
-  constructor(props) {
-    super(props);
+  componentDidMount() {
     this.props.onAutoSignIn();
   }
+
   render() {
     return (
       <Layout>
