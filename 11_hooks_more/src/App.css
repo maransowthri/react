@@ -1,0 +1,10 @@
+.App {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+button {
+  padding: 1rem;
+  margin: 0 2rem;
+  cursor: pointer;
+}
