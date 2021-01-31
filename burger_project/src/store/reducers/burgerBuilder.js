@@ -46,9 +46,7 @@ const removeIngredient = (state, action) => {
 };
 
 const fetchIngredientsInProgress = (state, action) => {
-  return {
-    ingredients: null,
-  };
+  return updateObject(state, { ingredients: null });
 };
 
 const fetchIngredientsSuccess = (state, action) => {
@@ -70,8 +68,6 @@ const setPreserveIngredients = (state, action) => {
 
 const preservedIngredientsSuccess = (state, action) => {
   return updateObject(state, {
-    ingredients: action.payload.ingredients,
-    totalPrice: action.payload.totalPrice,
     preserveIngredients: false,
   });
 };

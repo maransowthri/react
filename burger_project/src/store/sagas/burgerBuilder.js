@@ -4,12 +4,7 @@ import axios from "../../axios/axios-orders";
 
 export function* fetchIngredientsSaga(action) {
   if (action.payload.preserveIngredients) {
-    yield put(
-      actions.preservedIngredientsSuccess(
-        action.payload.ingredients,
-        action.payload.totalPrice
-      )
-    );
+    yield put(actions.preservedIngredientsSuccess());
   } else {
     yield put(actions.fetchIngredientsInProgress());
     try {

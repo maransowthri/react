@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import classes from "./ContactDetails.module.css";
@@ -10,111 +10,109 @@ import * as actions from "../../../store/actions/index";
 import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import { validateRules } from "../../../shared/validation";
 
-class ContactDetails extends Component {
-  state = {
-    formIsValid: false,
-    orderForm: {
-      name: {
-        elementType: "input",
-        label: "Name",
-        elementConfig: {
-          type: "text",
-          placeholder: "Your Name",
-        },
-        value: "",
-        validation: {
-          valid: false,
-          touched: false,
-          errorMessage: "Please input your name.",
-          rules: {
-            required: true,
-          },
-        },
+function ContactDetails(props) {
+  const [orderForm, setOrderForm] = useState({
+    name: {
+      elementType: "input",
+      label: "Name",
+      elementConfig: {
+        type: "text",
+        placeholder: "Your Name",
       },
-      email: {
-        elementType: "input",
-        label: "Email",
-        elementConfig: {
-          type: "text",
-          placeholder: "someone@example.com",
+      value: "",
+      validation: {
+        valid: false,
+        touched: false,
+        errorMessage: "Please input your name.",
+        rules: {
+          required: true,
         },
-        value: "",
-        validation: {
-          valid: false,
-          touched: false,
-          errorMessage: "Please enter valid mail",
-          rules: {
-            required: true,
-          },
-        },
-      },
-      address: {
-        elementType: "input",
-        label: "Address",
-        elementConfig: {
-          type: "text",
-          placeholder: "Address...",
-        },
-        value: "",
-        validation: {
-          valid: false,
-          touched: false,
-          errorMessage: "Please enter your address here.",
-          rules: {
-            required: true,
-          },
-        },
-      },
-      pin: {
-        elementType: "input",
-        label: "PIN Code",
-        elementConfig: {
-          type: "text",
-          placeholder: "XXXXXX",
-        },
-        value: "",
-        validation: {
-          valid: false,
-          touched: false,
-          errorMessage: "Please enter your PIN Code here.",
-          rules: {
-            required: true,
-            minLength: 5,
-            maxLength: 7,
-          },
-        },
-      },
-      deliveryMethod: {
-        elementType: "select",
-        label: "Delivery Type",
-        elementConfig: {
-          options: [
-            { value: "fastest", displayValue: "Fastest" },
-            { value: "cheapest", displayValue: "Cheapest" },
-          ],
-        },
-        value: "",
       },
     },
-  };
+    email: {
+      elementType: "input",
+      label: "Email",
+      elementConfig: {
+        type: "text",
+        placeholder: "someone@example.com",
+      },
+      value: "",
+      validation: {
+        valid: false,
+        touched: false,
+        errorMessage: "Please enter valid mail",
+        rules: {
+          required: true,
+        },
+      },
+    },
+    address: {
+      elementType: "input",
+      label: "Address",
+      elementConfig: {
+        type: "text",
+        placeholder: "Address...",
+      },
+      value: "",
+      validation: {
+        valid: false,
+        touched: false,
+        errorMessage: "Please enter your address here.",
+        rules: {
+          required: true,
+        },
+      },
+    },
+    pin: {
+      elementType: "input",
+      label: "PIN Code",
+      elementConfig: {
+        type: "text",
+        placeholder: "XXXXXX",
+      },
+      value: "",
+      validation: {
+        valid: false,
+        touched: false,
+        errorMessage: "Please enter your PIN Code here.",
+        rules: {
+          required: true,
+          minLength: 5,
+          maxLength: 7,
+        },
+      },
+    },
+    deliveryMethod: {
+      elementType: "select",
+      label: "Delivery Type",
+      elementConfig: {
+        options: [
+          { value: "fastest", displayValue: "Fastest" },
+          { value: "cheapest", displayValue: "Cheapest" },
+        ],
+      },
+      value: "",
+    },
+  });
+  const [formValidity, setFormValidity] = useState(false);
 
-  orderHandler = (e) => {
+  const orderHandler = (e) => {
     e.preventDefault();
-    const orderData = Object.keys(this.state.orderForm).reduce((prev, next) => {
-      prev[next] = this.state.orderForm[next].value;
+    const orderData = Object.keys(orderForm).reduce((prev, next) => {
+      prev[next] = orderForm[next].value;
       return prev;
     }, {});
     const order = {
-      ingredients: this.props.ingredients,
-      totalPrice: this.props.totalPrice,
+      ingredients: props.ingredients,
+      totalPrice: props.totalPrice,
       orderData: orderData,
-      userID: this.props.userID,
+      userID: props.userID,
     };
-    this.props.onPlaceOrder(order, this.props.token);
+    props.onPlaceOrder(order, props.token);
   };
 
-  inputChangedHandler = (event, key) => {
-    const updatedOrderForm = { ...this.state.orderForm };
+  const inputChangedHandler = (event, key) => {
+    const updatedOrderForm = { ...orderForm };
     let formIsValid = true;
     for (let key in updatedOrderForm) {
       if (
@@ -135,57 +133,52 @@ class ContactDetails extends Component {
       );
     }
     updatedOrderForm[key] = updatedInput;
-    this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
+    setOrderForm(updatedOrderForm);
+    setFormValidity(formIsValid);
   };
 
-  render() {
-    let form = null;
-    if (this.props.loading) {
-      form = <Spinner />;
-    } else {
-      const inputEls = Object.keys(this.state.orderForm).map((key) => (
-        <Input
-          key={key}
-          label={this.state.orderForm[key].label}
-          elementType={this.state.orderForm[key].elementType}
-          elementConfig={this.state.orderForm[key].elementConfig}
-          value={this.state.orderForm[key].value}
-          errorMessage={
-            this.state.orderForm[key].validation
-              ? this.state.orderForm[key].validation.errorMessage
-              : null
-          }
-          touched={
-            this.state.orderForm[key].validation
-              ? this.state.orderForm[key].validation.touched
-              : false
-          }
-          valid={
-            this.state.orderForm[key].validation
-              ? this.state.orderForm[key].validation.valid
-              : true
-          }
-          changed={(event) => this.inputChangedHandler(event, key)}
-        />
-      ));
-      form = (
-        <>
-          {inputEls}
-          <div className={classes.Submit}>
-            <Button btnType="Success" disabled={!this.state.formIsValid}>
-              Place Order
-            </Button>
-          </div>
-        </>
-      );
-    }
-    return (
-      <div className={classes.ContactDetails}>
-        <h3>Shipping Details</h3>
-        <form onSubmit={this.orderHandler}>{form}</form>
-      </div>
+  let form = null;
+  if (props.loading) {
+    form = <Spinner />;
+  } else {
+    const inputEls = Object.keys(orderForm).map((key) => (
+      <Input
+        key={key}
+        label={orderForm[key].label}
+        elementType={orderForm[key].elementType}
+        elementConfig={orderForm[key].elementConfig}
+        value={orderForm[key].value}
+        errorMessage={
+          orderForm[key].validation
+            ? orderForm[key].validation.errorMessage
+            : null
+        }
+        touched={
+          orderForm[key].validation ? orderForm[key].validation.touched : false
+        }
+        valid={
+          orderForm[key].validation ? orderForm[key].validation.valid : true
+        }
+        changed={(event) => inputChangedHandler(event, key)}
+      />
+    ));
+    form = (
+      <>
+        {inputEls}
+        <div className={classes.Submit}>
+          <Button btnType="Success" disabled={!formValidity}>
+            Place Order
+          </Button>
+        </div>
+      </>
     );
   }
+  return (
+    <div className={classes.ContactDetails}>
+      <h3>Shipping Details</h3>
+      <form onSubmit={orderHandler}>{form}</form>
+    </div>
+  );
 }
 
 const mapStateToProps = (state) => {

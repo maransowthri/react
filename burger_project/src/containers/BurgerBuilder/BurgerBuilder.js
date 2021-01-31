@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
@@ -17,120 +17,104 @@ export const INGREDIENTS = {
   meat: { label: "Meat", unitPrice: 1.3 },
 };
 
-export class BurgerBuilder extends Component {
-  componentDidMount() {
-    this.props.onFetchIngredients(
-      this.props.preserveIngredients,
-      this.props.ingredients,
-      this.props.totalPrice
-    );
-  }
+function BurgerBuilder(props) {
+  const [purchasing, setPurchasing] = useState(false);
+  const dispatch = useDispatch();
 
-  state = {
-    purchasing: false,
+  const ingredients = useSelector((state) => state.burgerBuilder.ingredients);
+  const totalPrice = useSelector((state) => state.burgerBuilder.totalPrice);
+  const error = useSelector((state) => state.burgerBuilder.error);
+  const preserveIngredients = useSelector(
+    (state) => state.burgerBuilder.preserveIngredients
+  );
+  const isAuthenticated = useSelector((state) => state.auth.token != null);
+
+  const onAddIngredient = (ingredient) =>
+    dispatch(actions.addIngredient(ingredient));
+  const onRemoveIngredient = (ingredient) =>
+    dispatch(actions.removeIngredient(ingredient));
+  const onFetchIngredients = useCallback(
+    (preserveIngredients) =>
+      dispatch(actions.fetchIngredients(preserveIngredients)),
+    [dispatch]
+  );
+  const onSetPreserveIngredients = () =>
+    dispatch(actions.setPreserveIngredients());
+  const onSetAlert = (message) => {
+    dispatch(actions.setAlert(message));
   };
 
-  updatePurchasable = (ingredients) => {
+  useEffect(() => {
+    onFetchIngredients(preserveIngredients);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onFetchIngredients]);
+
+  const updatePurchasable = (ingredients) => {
     const ingredientsSum = Object.keys(ingredients)
       .map((key) => ingredients[key])
       .reduce((prev, current) => prev + current);
     return ingredientsSum > 0;
   };
 
-  purchaseHandler = () => {
-    if (this.props.isAuthenticated) {
-      this.setState({ purchasing: true });
+  const purchaseHandler = () => {
+    if (isAuthenticated) {
+      setPurchasing(true);
     } else {
-      this.props.onSetPreserveIngredients();
-      this.props.onSetAlert("Please login to place your order!");
-      this.props.history.push("/login");
+      onSetPreserveIngredients();
+      onSetAlert("Please login to place your order!");
+      props.history.push("/login");
     }
   };
 
-  purchaseCancelHandler = () => {
-    this.setState({ purchasing: false });
+  const purchaseCancelHandler = () => {
+    setPurchasing(false);
   };
 
-  purchaseContinueHandler = () => {
-    this.props.history.push("/checkout");
+  const purchaseContinueHandler = () => {
+    props.history.push("/checkout");
   };
 
-  render() {
-    let ingredientsDisabled = null;
-    let summary = null;
-    let burger = this.props.error ? <p>Something went wrong!</p> : <Spinner />;
+  let ingredientsDisabled = null;
+  let summary = null;
+  let burger = error ? <p>Something went wrong!</p> : <Spinner />;
 
-    if (this.props.ingredients) {
-      ingredientsDisabled = Object.keys(this.props.ingredients).reduce(
-        (prev, next) => {
-          prev[next] = this.props.ingredients[next] === 0;
-          return prev;
-        },
-        {}
-      );
-      burger = (
-        <>
-          <BuildControls
-            isAuthenticated={this.props.isAuthenticated}
-            addIngredient={this.props.onAddIngredient}
-            removeIngredient={this.props.onRemoveIngredient}
-            ingredientsDisabled={ingredientsDisabled}
-            totalPrice={this.props.totalPrice}
-            purchasable={this.updatePurchasable(this.props.ingredients)}
-            purchase={this.purchaseHandler}
-          />
-        </>
-      );
-      summary = (
-        <OrderSummary
-          ingredients={this.props.ingredients}
-          cancelPurchase={this.purchaseCancelHandler}
-          continuePurchase={this.purchaseContinueHandler}
-          totalPrice={this.props.totalPrice}
-        />
-      );
-    }
-
-    return (
+  if (ingredients) {
+    ingredientsDisabled = Object.keys(ingredients).reduce((prev, next) => {
+      prev[next] = ingredients[next] === 0;
+      return prev;
+    }, {});
+    burger = (
       <>
-        <Modal show={this.state.purchasing} close={this.purchaseCancelHandler}>
-          {summary}
-        </Modal>
-        <Burger ingredients={this.props.ingredients} />
-        {burger}
+        <BuildControls
+          isAuthenticated={isAuthenticated}
+          addIngredient={onAddIngredient}
+          removeIngredient={onRemoveIngredient}
+          ingredientsDisabled={ingredientsDisabled}
+          totalPrice={totalPrice}
+          purchasable={updatePurchasable(ingredients)}
+          purchase={purchaseHandler}
+        />
       </>
     );
+    summary = (
+      <OrderSummary
+        ingredients={ingredients}
+        cancelPurchase={purchaseCancelHandler}
+        continuePurchase={purchaseContinueHandler}
+        totalPrice={totalPrice}
+      />
+    );
   }
+
+  return (
+    <>
+      <Modal show={purchasing} close={purchaseCancelHandler}>
+        {summary}
+      </Modal>
+      <Burger ingredients={ingredients} />
+      {burger}
+    </>
+  );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    ingredients: state.burgerBuilder.ingredients,
-    totalPrice: state.burgerBuilder.totalPrice,
-    error: state.burgerBuilder.error,
-    preserveIngredients: state.burgerBuilder.preserveIngredients,
-    isAuthenticated: state.auth.token != null,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onAddIngredient: (ingredient) =>
-      dispatch(actions.addIngredient(ingredient)),
-    onRemoveIngredient: (ingredient) =>
-      dispatch(actions.removeIngredient(ingredient)),
-    onFetchIngredients: (preserveIngredients, ingredients, totalPrice) =>
-      dispatch(
-        actions.fetchIngredients(preserveIngredients, ingredients, totalPrice)
-      ),
-    onSetPreserveIngredients: () => dispatch(actions.setPreserveIngredients()),
-    onSetAlert: (message) => {
-      dispatch(actions.setAlert(message));
-    },
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withErrorHandler(BurgerBuilder, axios));
+export default withErrorHandler(BurgerBuilder, axios);

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 
 import Button from "../../components/UI/Button/Button";
@@ -12,159 +12,136 @@ import { Redirect } from "react-router-dom";
 import Alert from "../../components/UI/Alert/Alert";
 import { validateRules } from "../../shared/validation";
 
-class Auth extends Component {
-  state = {
-    authType: "",
-    controls: {
-      email: {
-        elementType: "input",
-        label: "Email",
-        elementConfig: {
-          type: "email",
-          placeholder: "someone@example.com",
-        },
-        value: "",
-        validation: {
-          valid: false,
-          touched: false,
-          errorMessage: "Please input your mail ID.",
-          rules: {
-            required: true,
-            isEmail: true,
-          },
-        },
+function Auth(props) {
+  const [authType, setAuthType] = useState("");
+  const [controls, setControls] = useState({
+    email: {
+      elementType: "input",
+      label: "Email",
+      elementConfig: {
+        type: "email",
+        placeholder: "someone@example.com",
       },
-      password: {
-        elementType: "input",
-        label: "Password",
-        elementConfig: {
-          type: "password",
-          placeholder: "Password",
-        },
-        value: "",
-        validation: {
-          valid: false,
-          touched: false,
-          errorMessage: "Please enter your password.",
-          rules: {
-            required: true,
-            minLength: 6,
-          },
+      value: "",
+      validation: {
+        valid: false,
+        touched: false,
+        errorMessage: "Please input your mail ID.",
+        rules: {
+          required: true,
+          isEmail: true,
         },
       },
     },
+    password: {
+      elementType: "input",
+      label: "Password",
+      elementConfig: {
+        type: "password",
+        placeholder: "Password",
+      },
+      value: "",
+      validation: {
+        valid: false,
+        touched: false,
+        errorMessage: "Please enter your password.",
+        rules: {
+          required: true,
+          minLength: 6,
+        },
+      },
+    },
+  });
+  const { showAlert, onRemoveAlert } = props;
+
+  useEffect(() => {
+    if (showAlert) {
+      setTimeout(() => {
+        onRemoveAlert();
+      }, 3000);
+    }
+  }, [showAlert, onRemoveAlert]);
+
+  const onSignupHandler = (event) => {
+    setAuthType(actions.SIGNUP);
   };
 
-  onSignupHandler = (event) => {
-    this.setState({ authType: actions.SIGNUP });
-  };
-
-  onSubmitHandler = (event) => {
+  const onSubmitHandler = (event) => {
     event.preventDefault();
-    this.props.onAuth(
-      this.state.controls.email.value,
-      this.state.controls.password.value,
-      this.state.authType
-    );
+    props.onAuth(controls.email.value, controls.password.value, authType);
   };
 
-  onSignInHandler = (event) => {
-    this.setState({ authType: actions.SIGNIN });
+  const onSignInHandler = (event) => {
+    setAuthType(actions.SIGNIN);
   };
 
-  inputChangedHandler = (event, key) => {
+  const inputChangedHandler = (event, key) => {
     const updatedControls = {
-      ...this.state.controls,
+      ...controls,
       [key]: {
-        ...this.state.controls[key],
+        ...controls[key],
         value: event.target.value,
         validation: {
-          ...this.state.controls[key].validation,
+          ...controls[key].validation,
           valid: validateRules(
             event.target.value,
-            this.state.controls[key].validation.rules
+            controls[key].validation.rules
           ),
           touched: true,
         },
       },
     };
-    this.setState({ controls: updatedControls });
+    setControls(updatedControls);
   };
 
-  render() {
-    const inputEls = this.props.loading ? (
-      <Spinner />
-    ) : (
-      Object.keys(this.state.controls).map((key) => (
-        <Input
-          key={key}
-          label={this.state.controls[key].label}
-          elementType={this.state.controls[key].elementType}
-          elementConfig={this.state.controls[key].elementConfig}
-          value={this.state.controls[key].value}
-          errorMessage={
-            this.state.controls[key].validation
-              ? this.state.controls[key].validation.errorMessage
-              : null
-          }
-          touched={
-            this.state.controls[key].validation
-              ? this.state.controls[key].validation.touched
-              : false
-          }
-          valid={
-            this.state.controls[key].validation
-              ? this.state.controls[key].validation.valid
-              : true
-          }
-          changed={(event) => this.inputChangedHandler(event, key)}
-        />
-      ))
-    );
+  const inputEls = props.loading ? (
+    <Spinner />
+  ) : (
+    Object.keys(controls).map((key) => (
+      <Input
+        key={key}
+        label={controls[key].label}
+        elementType={controls[key].elementType}
+        elementConfig={controls[key].elementConfig}
+        value={controls[key].value}
+        errorMessage={
+          controls[key].validation
+            ? controls[key].validation.errorMessage
+            : null
+        }
+        touched={
+          controls[key].validation ? controls[key].validation.touched : false
+        }
+        valid={controls[key].validation ? controls[key].validation.valid : true}
+        changed={(event) => inputChangedHandler(event, key)}
+      />
+    ))
+  );
 
-    let redirect = this.props.isAuthenticated ? <Redirect to="/" /> : null;
-    let alert = null;
-    if (this.props.showAlert) {
-      alert = <Alert message={this.props.alertMessage} />;
-      setTimeout(() => {
-        this.props.onRemoveAlert();
-      }, 5000);
-    }
+  let redirect = props.isAuthenticated ? <Redirect to="/" /> : null;
 
-    return (
-      <>
-        {redirect}
-        <div className={classes.Auth}>
-          <Button
-            click={(event) => this.onSignInHandler(event)}
-            btnType="Success"
-          >
-            Sign In
+  return (
+    <>
+      {redirect}
+      <div className={classes.Auth}>
+        <Button click={(event) => onSignInHandler(event)} btnType="Success">
+          Sign In
+        </Button>
+        <Button click={(event) => onSignupHandler(event)} btnType="Danger">
+          Signup
+        </Button>
+        <h3>{authType === actions.SIGNUP ? "Signup" : "SignIn"}</h3>
+        {props.showAlert && <Alert message={props.alertMessage} />}
+        {props.error ? <p>{props.error}</p> : null}
+        <>
+          {inputEls}
+          <Button click={(event) => onSubmitHandler(event)} btnType="Success">
+            Submit
           </Button>
-          <Button
-            click={(event) => this.onSignupHandler(event)}
-            btnType="Danger"
-          >
-            Signup
-          </Button>
-          <h3>
-            {this.state.authType === actions.SIGNUP ? "Signup" : "SignIn"}
-          </h3>
-          {alert}
-          {this.props.error ? <p>{this.props.error}</p> : null}
-          <>
-            {inputEls}
-            <Button
-              click={(event) => this.onSubmitHandler(event)}
-              btnType="Success"
-            >
-              Submit
-            </Button>
-          </>
-        </div>
-      </>
-    );
-  }
+        </>
+      </div>
+    </>
+  );
 }
 
 const mapStateToProps = (state) => {

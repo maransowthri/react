@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 
 import classes from "./Orders.module.css";
@@ -9,49 +9,49 @@ import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import * as actions from "../../store/actions/index";
 import { Redirect } from "react-router-dom";
 
-class Orders extends Component {
-  componentDidMount() {
-    this.props.onFetchOrders(this.props.token, this.props.userID);
-  }
+function Orders(props) {
+  const { onFetchOrders, token, userID } = props;
 
-  render() {
-    let summary = null;
+  useEffect(() => {
+    onFetchOrders(token, userID);
+  }, [onFetchOrders, token, userID]);
 
-    if (this.props.loading) {
-      summary = <Spinner />;
+  let summary = null;
+
+  if (props.loading) {
+    summary = <Spinner />;
+  } else {
+    if (props.orders) {
+      let orders = Object.keys(props.orders).map((key) => {
+        return (
+          <Order
+            key={key}
+            ingredients={props.orders[key].ingredients}
+            price={props.orders[key].totalPrice}
+          />
+        );
+      });
+      summary = <>{orders}</>;
     } else {
-      if (this.props.orders) {
-        let orders = Object.keys(this.props.orders).map((key) => {
-          return (
-            <Order
-              key={key}
-              ingredients={this.props.orders[key].ingredients}
-              price={this.props.orders[key].totalPrice}
-            />
-          );
-        });
-        summary = <>{orders}</>;
-      } else {
-        summary = <h3>No orders found.</h3>;
-      }
+      summary = <h3>No orders found.</h3>;
     }
-
-    let redirect = null;
-    if (!this.props.token) {
-      this.props.onSetAlert("Please login to see your orders!");
-      redirect = <Redirect to="/login" />;
-    }
-
-    return (
-      <>
-        {redirect}
-        <div className={classes.Orders}>
-          <h3>Your Orders</h3>
-          {summary}
-        </div>
-      </>
-    );
   }
+
+  let redirect = null;
+  if (!props.token) {
+    props.onSetAlert("Please login to see your orders!");
+    redirect = <Redirect to="/login" />;
+  }
+
+  return (
+    <>
+      {redirect}
+      <div className={classes.Orders}>
+        <h3>Your Orders</h3>
+        {summary}
+      </div>
+    </>
+  );
 }
 
 const mapStateToProps = (state) => {
