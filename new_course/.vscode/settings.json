@@ -1,0 +1,8 @@
+{
+  "editor.autoClosingBrackets": "always",
+  "editor.autoClosingQuotes": "always",
+  "editor.formatOnPaste": true,
+  "github.copilot.inlineSuggest.enable": false,
+  "editor.formatOnSave": true,
+  "breadcrumbs.enabled": false
+}
