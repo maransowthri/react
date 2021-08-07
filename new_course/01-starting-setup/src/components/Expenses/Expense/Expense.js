@@ -1,7 +1,7 @@
-import ExpenseDate from "./ExpenseDate";
-import "./ExpenseItem.css";
+import ExpenseDate from "./ExpenseDate/ExpenseDate";
+import "./Expense.css";
 
-function ExpenseItem({ date, title, amount }) {
+const ExpenseItem = ({ date, title, amount }) => {
   return (
     <div className="expense-item">
       <ExpenseDate date={date} />
@@ -11,6 +11,6 @@ function ExpenseItem({ date, title, amount }) {
       </div>
     </div>
   );
-}
+};
 
 export default ExpenseItem;
