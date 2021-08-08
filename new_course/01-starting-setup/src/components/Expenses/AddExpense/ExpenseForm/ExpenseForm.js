@@ -37,13 +37,14 @@ const ExpenseForm = ({ onAddExpense, hideExpenseForm }) => {
     const enteredData = {
       id: Math.random(),
       title,
-      amount,
+      amount: +amount,
       date: new Date(date),
     };
     onAddExpense(enteredData);
     setTitle("");
     setAmount("");
     setDate("");
+    hideExpenseForm();
   };
 
   return (
@@ -76,7 +77,9 @@ const ExpenseForm = ({ onAddExpense, hideExpenseForm }) => {
       </div>
 
       <div className="new-expense__actions">
-        <button onClick={hideExpenseForm}>Cancel</button>
+        <button type="button" onClick={hideExpenseForm}>
+          Cancel
+        </button>
         <button type="submit">Add Expense</button>
       </div>
     </form>
