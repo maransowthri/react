@@ -29,15 +29,9 @@ function App() {
   const [expenses, setExpenses] = useState(EXPENSES);
 
   const addExpense = (expenseData) => {
-    setExpenses([...expenses, expenseData]);
-  };
-
-  const filterExpense = (year) => {
-    const desiredExpenses = EXPENSES.filter(
-      (expense) => expense.date.getFullYear() === year
-    );
-
-    setExpenses(desiredExpenses);
+    setExpenses((prevState) => {
+      return [...prevState, expenseData];
+    });
   };
 
   /* What's happening behind the scenes */
@@ -51,7 +45,7 @@ function App() {
   return (
     <div>
       <AddExpense onAddExpense={addExpense} />
-      <Expenses expenses={expenses} onFilterExpense={filterExpense} />
+      <Expenses expenses={expenses} />
     </div>
   );
 }
