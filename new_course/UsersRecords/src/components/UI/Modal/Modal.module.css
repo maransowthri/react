@@ -1,0 +1,48 @@
+.model {
+  position: absolute;
+  left: 25%;
+  background: white;
+  width: 50%;
+  z-index: 3;
+  border-radius: 10px;
+}
+
+.model p,
+.model button {
+  margin: 1rem;
+}
+
+.model h3 {
+  border-radius: 10px 10px 0 0;
+  background-color: purple;
+  padding: 1rem;
+  color: white;
+}
+
+.open {
+  animation: open-model 0.3s ease-in forwards;
+}
+
+.close {
+  animation: close-model 0.3s ease-in forwards;
+}
+
+@keyframes open-model {
+  0% {
+    top: -50%;
+  }
+
+  100% {
+    top: 25%;
+  }
+}
+
+@keyframes close-model {
+  0% {
+    top: 25%;
+  }
+
+  100% {
+    top: -50%;
+  }
+}

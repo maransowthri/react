@@ -1,6 +1,4 @@
 * {
-  padding: 0;
-  margin: 0;
   box-sizing: border-box;
 }
 
@@ -10,5 +8,5 @@ html {
 
 body {
   margin: 0;
-  background-color: #333;
+  background-color: #272727;
 }

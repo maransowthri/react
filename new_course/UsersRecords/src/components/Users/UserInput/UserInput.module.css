@@ -1,0 +1,8 @@
+.form {
+  position: absolute;
+  background-color: white;
+  top: 10%;
+  width: 40%;
+  left: 30%;
+  border-radius: 10px;
+}

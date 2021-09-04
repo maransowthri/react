@@ -1,0 +1,14 @@
+.input {
+  margin: 1rem 0.5rem;
+}
+
+.input label {
+  display: block;
+  margin: 0.5rem 0;
+}
+
+.input input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid black;
+}
